@@ -35,4 +35,10 @@ public class ProdutoController {
     public ResponseEntity<ProdutoDtoRequest> atualizaProdutoPorId(@RequestBody ProdutoDtoRequest data,@PathVariable Long id){
         return ResponseEntity.ok(service.atualizaProdutoPorId(data, id));
     }
+
+    @DeleteMapping("/produto/{id}")
+    public ResponseEntity<Void> deletaProdutoPorId(@PathVariable Long id){
+        service.deletaProdutoPorId(id);
+        return ResponseEntity.ok().build();
+    }
 }

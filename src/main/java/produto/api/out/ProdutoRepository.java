@@ -1,6 +1,7 @@
 package produto.api.out;
 
 
+import jakarta.transaction.Transactional;
 import produto.api.application.domain.ProdutoDomain;
 
 import java.util.List;
@@ -17,4 +18,7 @@ public interface ProdutoRepository {
     Optional<ProdutoDomain> findById(Long id);
 
     ProdutoDomain atualizaProduto(ProdutoDomain domain);
+
+    @Transactional
+    void deletaProduto(ProdutoDomain domain);
 }

@@ -15,4 +15,7 @@ public interface ProdutoService {
     ProdutoDtoResponse buscaProdutoPorId(Long id);
 
     ProdutoDtoRequest atualizaProdutoPorId(ProdutoDtoRequest data,Long id);
+
+    @Transactional
+    void deletaProdutoPorId(Long id);
 }

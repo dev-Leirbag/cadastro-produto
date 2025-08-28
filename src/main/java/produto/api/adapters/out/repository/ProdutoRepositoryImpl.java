@@ -51,4 +51,11 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
 
         return converter.entityParaDomain(produtoSalvo);
     }
+
+    @Override
+    public void deletaProduto(ProdutoDomain domain) {
+        ProdutoEntity produtoEntity = converter.domainParaEntity(domain);
+
+        jpaRepository.delete(produtoEntity);
+    }
 }

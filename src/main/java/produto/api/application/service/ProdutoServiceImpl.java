@@ -68,6 +68,15 @@ public class ProdutoServiceImpl implements ProdutoService {
         return converter.domainParaDtoRequest(produtoSalvo);
     }
 
+    @Override
+    public void deletaProdutoPorId(Long id) {
+        ProdutoDomain produtoDomain = repository.findById(id).orElseThrow(() ->{
+            throw new ProdutoNotFoundException("Produto com esse id não foi encontrado");
+        });
+
+        repository.deletaProduto(produtoDomain);
+    }
+
     private void verificaCampos(ProdutoDomain produto){
         String nomeProduto = produto.getNomeProduto();
         String tipoProduto = produto.getTipoProduto();
