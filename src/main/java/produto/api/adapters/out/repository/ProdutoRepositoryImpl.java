@@ -58,4 +58,11 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
 
         jpaRepository.delete(produtoEntity);
     }
+
+    @Override
+    public List<ProdutoDomain> buscarProdutoPorNome(String nome) {
+        List<ProdutoEntity> produtoEntityList = jpaRepository.buscaPorNomeProduto(nome);
+
+        return converter.entityParaDomain(produtoEntityList);
+    }
 }

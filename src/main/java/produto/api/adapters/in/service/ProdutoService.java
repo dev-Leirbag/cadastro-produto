@@ -18,4 +18,6 @@ public interface ProdutoService {
 
     @Transactional
     void deletaProdutoPorId(Long id);
+
+    List<ProdutoDtoResponse> buscaProduto(String nomeProduto);
 }

@@ -41,4 +41,9 @@ public class ProdutoController {
         service.deletaProdutoPorId(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/produto/buscar")
+    public ResponseEntity<List<ProdutoDtoResponse>> buscaProduto(@RequestParam(value = "nomeProduto") String nomeProduto){
+        return ResponseEntity.ok(service.buscaProduto(nomeProduto));
+    }
 }

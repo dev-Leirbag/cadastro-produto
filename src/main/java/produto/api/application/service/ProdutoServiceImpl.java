@@ -77,6 +77,13 @@ public class ProdutoServiceImpl implements ProdutoService {
         repository.deletaProduto(produtoDomain);
     }
 
+    @Override
+    public List<ProdutoDtoResponse> buscaProduto(String nomeProduto) {
+        List<ProdutoDomain> domainList = repository.buscarProdutoPorNome(nomeProduto);
+
+        return converter.domainParaDtoResponse(domainList);
+    }
+
     private void verificaCampos(ProdutoDomain produto){
         String nomeProduto = produto.getNomeProduto();
         String tipoProduto = produto.getTipoProduto();
