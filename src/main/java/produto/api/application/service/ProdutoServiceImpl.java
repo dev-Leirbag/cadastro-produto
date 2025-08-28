@@ -3,16 +3,15 @@ package produto.api.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import produto.api.adapters.in.dto.ProdutoDtoRequest;
+import produto.api.adapters.in.dto.ProdutoDtoResponse;
 import produto.api.adapters.in.mapper.Converter;
 import produto.api.adapters.in.service.ProdutoService;
 import produto.api.application.domain.ProdutoDomain;
-import produto.api.application.infra.controller.exceptions.NomeProdutoInvalidException;
-import produto.api.application.infra.controller.exceptions.PrecoInvalidException;
-import produto.api.application.infra.controller.exceptions.QuantidadeEstoqueInvalidException;
-import produto.api.application.infra.controller.exceptions.TipoProdutoInvalidException;
+import produto.api.application.infra.controller.exceptions.*;
 import produto.api.out.ProdutoRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +31,13 @@ public class ProdutoServiceImpl implements ProdutoService {
         return converter.domainParaDtoRequest(produtoDomain);
     }
 
+    @Override
+    public List<ProdutoDtoResponse> listaProduto() {
+        List<ProdutoDomain> domainList = repository.listaProduto();
+
+        return converter.domainParaDtoResponse(domainList);
+    }
+
     private void verificaCampos(ProdutoDomain produto){
         String nomeProduto = produto.getNomeProduto();
         String tipoProduto = produto.getTipoProduto();
@@ -39,6 +45,7 @@ public class ProdutoServiceImpl implements ProdutoService {
         Integer quantidadeEstoque = produto.getQuantidadeEstoque();
 
         if(nomeProduto.isBlank()) throw new NomeProdutoInvalidException("O nome do produto não pode estar vazio!");
+        if(repository.existisByProduto(nomeProduto)) throw new ProdutoExistsException("Esse produto já existe");
 
         if(tipoProduto.isBlank()) throw new TipoProdutoInvalidException("O tipo do produto não pode estar vazio!");
 

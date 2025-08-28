@@ -7,6 +7,8 @@ import produto.api.adapters.out.entities.ProdutoEntity;
 import produto.api.application.domain.ProdutoDomain;
 import produto.api.out.ProdutoRepository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class ProdutoRepositoryImpl implements ProdutoRepository {
@@ -21,5 +23,17 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
         ProdutoEntity produtoSalvo = jpaRepository.save(produtoEntity);
 
         return converter.entityParaDomain(produtoSalvo);
+    }
+
+    @Override
+    public boolean existisByProduto(String nomeProduto) {
+        return jpaRepository.existsByNomeProduto(nomeProduto);
+    }
+
+    @Override
+    public List<ProdutoDomain> listaProduto() {
+        List<ProdutoEntity> produtoEntityList = jpaRepository.findAll();
+
+        return converter.entityParaDomain(produtoEntityList);
     }
 }

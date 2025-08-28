@@ -4,4 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import produto.api.adapters.out.entities.ProdutoEntity;
 
 public interface ProdutoJpaRepository extends JpaRepository<ProdutoEntity, Long> {
+
+    boolean existsByNomeProduto(String nomeProduto);
+
 }
