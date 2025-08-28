@@ -42,4 +42,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return mensagemErro(ex, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ProdutoNotFoundException.class)
+    public ResponseEntity<RestErrorMessage> produtoNaoEncontrado(ProdutoNotFoundException ex){
+        return mensagemErro(ex, HttpStatus.NOT_FOUND);
+    }
+
 }

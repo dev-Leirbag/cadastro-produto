@@ -5,19 +5,23 @@ import org.springframework.stereotype.Service;
 import produto.api.adapters.in.dto.ProdutoDtoRequest;
 import produto.api.adapters.in.dto.ProdutoDtoResponse;
 import produto.api.adapters.in.mapper.Converter;
+import produto.api.adapters.in.mapper.UpdateConverter;
 import produto.api.adapters.in.service.ProdutoService;
+import produto.api.adapters.out.entities.ProdutoEntity;
 import produto.api.application.domain.ProdutoDomain;
 import produto.api.application.infra.controller.exceptions.*;
 import produto.api.out.ProdutoRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ProdutoServiceImpl implements ProdutoService {
 
     private final Converter converter;
+    private final UpdateConverter updateConverter;
     private final ProdutoRepository repository;
 
     @Override
@@ -36,6 +40,32 @@ public class ProdutoServiceImpl implements ProdutoService {
         List<ProdutoDomain> domainList = repository.listaProduto();
 
         return converter.domainParaDtoResponse(domainList);
+    }
+
+    @Override
+    public ProdutoDtoResponse buscaProdutoPorId(Long id) {
+        ProdutoDomain produtoDomain = repository.findById(id).orElseThrow(() ->{
+            throw new ProdutoNotFoundException("Produto com esse id não foi encontrado");
+        });
+
+        return converter.domainParaDtoResponse(produtoDomain);
+    }
+
+    @Override
+    public ProdutoDtoRequest atualizaProdutoPorId(ProdutoDtoRequest data,Long id) {
+        ProdutoDomain produtoDomain = repository.findById(id).orElseThrow(() ->{
+            throw new ProdutoNotFoundException("Produto com esse id não foi encontrado");
+        });
+
+        ProdutoEntity produtoEntity = converter.domainParaEntity(produtoDomain);
+
+        updateConverter.updateConverter(data, produtoEntity);
+
+        ProdutoDomain produtoAtualizado = converter.entityParaDomain(produtoEntity);
+
+        ProdutoDomain produtoSalvo = repository.atualizaProduto(produtoAtualizado);
+
+        return converter.domainParaDtoRequest(produtoSalvo);
     }
 
     private void verificaCampos(ProdutoDomain produto){

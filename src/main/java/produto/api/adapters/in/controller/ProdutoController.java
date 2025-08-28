@@ -25,4 +25,14 @@ public class ProdutoController {
     public ResponseEntity<List<ProdutoDtoResponse>> listaProdutos(){
         return ResponseEntity.ok(service.listaProduto());
     }
+
+    @GetMapping("/produto/{id}")
+    public ResponseEntity<ProdutoDtoResponse> buscaProdutoPorId(@PathVariable Long id){
+        return ResponseEntity.ok(service.buscaProdutoPorId(id));
+    }
+
+    @PutMapping("/produto/{id}")
+    public ResponseEntity<ProdutoDtoRequest> atualizaProdutoPorId(@RequestBody ProdutoDtoRequest data,@PathVariable Long id){
+        return ResponseEntity.ok(service.atualizaProdutoPorId(data, id));
+    }
 }
