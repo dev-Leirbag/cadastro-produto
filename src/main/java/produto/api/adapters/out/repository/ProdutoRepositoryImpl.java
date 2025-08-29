@@ -7,6 +7,7 @@ import produto.api.adapters.out.entities.ProdutoEntity;
 import produto.api.application.domain.ProdutoDomain;
 import produto.api.out.ProdutoRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +63,27 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
     @Override
     public List<ProdutoDomain> buscarProdutoPorNome(String nome) {
         List<ProdutoEntity> produtoEntityList = jpaRepository.buscaPorNomeProduto(nome);
+
+        return converter.entityParaDomain(produtoEntityList);
+    }
+
+    @Override
+    public List<ProdutoDomain> buscaProdutoPorTipo(String tipo) {
+        List<ProdutoEntity> produtoEntityList = jpaRepository.buscaProdutoPorTipo(tipo);
+
+        return converter.entityParaDomain(produtoEntityList);
+    }
+
+    @Override
+    public List<ProdutoDomain> buscaPorPreco(BigDecimal min, BigDecimal max) {
+        List<ProdutoEntity> produtoEntityList = jpaRepository.buscaPorPreco(min, max);
+
+        return converter.entityParaDomain(produtoEntityList);
+    }
+
+    @Override
+    public List<ProdutoDomain> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max) {
+        List<ProdutoEntity> produtoEntityList = jpaRepository.buscaAvancada(nomeProduto, tipoProduto, min, max);
 
         return converter.entityParaDomain(produtoEntityList);
     }

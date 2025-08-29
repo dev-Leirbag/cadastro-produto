@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import produto.api.adapters.in.dto.ProdutoDtoRequest;
 import produto.api.adapters.in.dto.ProdutoDtoResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProdutoService {
@@ -20,4 +21,10 @@ public interface ProdutoService {
     void deletaProdutoPorId(Long id);
 
     List<ProdutoDtoResponse> buscaProduto(String nomeProduto);
+
+    List<ProdutoDtoResponse> buscaPorTipoProduto(String tipoProduto);
+
+    List<ProdutoDtoResponse> buscaPorPreco(BigDecimal min, BigDecimal max);
+
+    List<ProdutoDtoResponse> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max);
 }
