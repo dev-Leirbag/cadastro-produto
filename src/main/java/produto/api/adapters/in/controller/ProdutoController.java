@@ -7,6 +7,7 @@ import produto.api.adapters.in.dto.ProdutoDtoRequest;
 import produto.api.adapters.in.dto.ProdutoDtoResponse;
 import produto.api.adapters.in.service.ProdutoService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -35,4 +36,34 @@ public class ProdutoController {
     public ResponseEntity<ProdutoDtoRequest> atualizaProdutoPorId(@RequestBody ProdutoDtoRequest data,@PathVariable Long id){
         return ResponseEntity.ok(service.atualizaProdutoPorId(data, id));
     }
+
+    @DeleteMapping("/produto/{id}")
+    public ResponseEntity<Void> deletaProdutoPorId(@PathVariable Long id){
+        service.deletaProdutoPorId(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/produto/buscar")
+    public ResponseEntity<List<ProdutoDtoResponse>> buscaProduto(@RequestParam(value = "nomeProduto") String nomeProduto){
+        return ResponseEntity.ok(service.buscaProduto(nomeProduto));
+    }
+
+    @GetMapping("/produto/buscar/tipo")
+    public ResponseEntity<List<ProdutoDtoResponse>> buscaPorTipoProduto(@RequestParam(value = "tipoProduto") String tipoProduto){
+        return ResponseEntity.ok(service.buscaPorTipoProduto(tipoProduto));
+    }
+
+    @GetMapping("/produto/buscar/preco")
+    public ResponseEntity<List<ProdutoDtoResponse>> buscaPorPreco(@RequestParam(value = "min")BigDecimal min,@RequestParam(value = "max")BigDecimal max){
+        return ResponseEntity.ok(service.buscaPorPreco(min, max));
+    }
+
+    @GetMapping("/produto/buscar/filtro")
+    public ResponseEntity<List<ProdutoDtoResponse>> buscaAvancada(@RequestParam(value = "nomeProduto", required = false)String nomeProduto,
+                                                                  @RequestParam(value = "tipoProduto", required = false)String tipoProduto,
+                                                                  @RequestParam(value = "min", required = false)BigDecimal min,
+                                                                  @RequestParam(value = "max", required = false)BigDecimal max){
+        return ResponseEntity.ok(service.buscaAvancada(nomeProduto, tipoProduto, min, max));
+    }
+
 }
