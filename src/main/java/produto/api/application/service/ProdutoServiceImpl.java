@@ -68,6 +68,43 @@ public class ProdutoServiceImpl implements ProdutoService {
         return converter.domainParaDtoRequest(produtoSalvo);
     }
 
+    @Override
+    public void deletaProdutoPorId(Long id) {
+        ProdutoDomain produtoDomain = repository.findById(id).orElseThrow(() ->{
+            throw new ProdutoNotFoundException("Produto com esse id não foi encontrado");
+        });
+
+        repository.deletaProduto(produtoDomain);
+    }
+
+    @Override
+    public List<ProdutoDtoResponse> buscaProduto(String nomeProduto) {
+        List<ProdutoDomain> domainList = repository.buscarProdutoPorNome(nomeProduto);
+
+        return converter.domainParaDtoResponse(domainList);
+    }
+
+    @Override
+    public List<ProdutoDtoResponse> buscaPorTipoProduto(String tipoProduto) {
+        List<ProdutoDomain> domainList = repository.buscaProdutoPorTipo(tipoProduto);
+
+        return converter.domainParaDtoResponse(domainList);
+    }
+
+    @Override
+    public List<ProdutoDtoResponse> buscaPorPreco(BigDecimal min, BigDecimal max) {
+        List<ProdutoDomain> domainList = repository.buscaPorPreco(min, max);
+
+        return converter.domainParaDtoResponse(domainList);
+    }
+
+    @Override
+    public List<ProdutoDtoResponse> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max) {
+        List<ProdutoDomain> domainList = repository.buscaAvancada(nomeProduto, tipoProduto, min, max);
+
+        return converter.domainParaDtoResponse(domainList);
+    }
+
     private void verificaCampos(ProdutoDomain produto){
         String nomeProduto = produto.getNomeProduto();
         String tipoProduto = produto.getTipoProduto();
