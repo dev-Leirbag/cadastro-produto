@@ -13,7 +13,10 @@ import produto.api.adapters.in.dto.ProdutoDtoRequest;
 import produto.api.adapters.in.mapper.Converter;
 import produto.api.adapters.out.entities.ProdutoEntity;
 import produto.api.application.domain.ProdutoDomain;
+import produto.api.application.infra.controller.exceptions.PrecoInvalidException;
 import produto.api.application.infra.controller.exceptions.ProdutoExistsException;
+import produto.api.application.infra.controller.exceptions.QuantidadeEstoqueInvalidException;
+import produto.api.application.infra.controller.exceptions.TipoProdutoInvalidException;
 import produto.api.out.ProdutoRepository;
 
 import java.math.BigDecimal;
@@ -82,6 +85,67 @@ class ProdutoServiceTest {
         verify(converter, times(1)).dtoRequestParaDomain(produtoDtoRequest);
         verify(repository, times(1)).existisByProduto(produtoDtoRequest.getNomeProduto());
         verify(repository, never()).salvaProduto(any(ProdutoDomain.class));
+    }
+
+    @Test
+    @DisplayName("Não deve criar o produto caso o tipo do produto esteja vazio")
+    void criaProdutoCase3(){
+        ProdutoDtoRequest produtoDtoRequest = new ProdutoDtoRequest("Nome do Produto", "", new BigDecimal(10), 10);
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Nome do Produto", "", new BigDecimal(10), 10);
+
+        when(converter.dtoRequestParaDomain(produtoDtoRequest)).thenReturn(produtoDomain);
+        when(repository.existisByProduto(produtoDomain.getNomeProduto())).thenReturn(false);
+
+        TipoProdutoInvalidException exception = Assertions.assertThrows(TipoProdutoInvalidException.class, () -> {
+            service.criaProduto(produtoDtoRequest);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("O tipo do produto não pode estar vazio!");
+
+        verify(converter, times(1)).dtoRequestParaDomain(produtoDtoRequest);
+        verify(repository, times(1)).existisByProduto(produtoDtoRequest.getNomeProduto());
+        verify(repository, never()).salvaProduto(any(ProdutoDomain.class));
 
     }
+
+    @Test
+    @DisplayName("Não deve criar o produto caso o preço seja null ou menor que ZERO")
+    void criaProdutoCase4(){
+        ProdutoDtoRequest produtoDtoRequest = new ProdutoDtoRequest("Nome do Produto", "Tipo do Produto", new BigDecimal(0), 10);
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(0), 10);
+
+        when(converter.dtoRequestParaDomain(produtoDtoRequest)).thenReturn(produtoDomain);
+        when(repository.existisByProduto(produtoDomain.getNomeProduto())).thenReturn(false);
+
+        PrecoInvalidException exception = Assertions.assertThrows(PrecoInvalidException.class, () -> {
+           service.criaProduto(produtoDtoRequest);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("O preço não pode ser nulo ou abaixo de zero");
+
+        verify(converter, times(1)).dtoRequestParaDomain(produtoDtoRequest);
+        verify(repository, times(1)).existisByProduto(produtoDtoRequest.getNomeProduto());
+        verify(repository, never()).salvaProduto(any(ProdutoDomain.class));
+    }
+
+    @Test
+    @DisplayName("Não deve criar o produto caso a quantidade de estoque seja null ou menor que ZERO")
+    void criaProdutoCase5(){
+        ProdutoDtoRequest produtoDtoRequest = new ProdutoDtoRequest("Nome do Produto", "Tipo do Produto", new BigDecimal(10), 0);
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10), 0);
+
+        when(converter.dtoRequestParaDomain(produtoDtoRequest)).thenReturn(produtoDomain);
+        when(repository.existisByProduto(produtoDomain.getNomeProduto())).thenReturn(false);
+
+        QuantidadeEstoqueInvalidException exception = Assertions.assertThrows(QuantidadeEstoqueInvalidException.class, () ->{
+           service.criaProduto(produtoDtoRequest);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("A quantidade não pode ser nula ou abaixo de zero");
+
+        verify(converter, times(1)).dtoRequestParaDomain(produtoDtoRequest);
+        verify(repository, times(1)).existisByProduto(produtoDomain.getNomeProduto());
+        verify(repository, never()).salvaProduto(any(ProdutoDomain.class));
+    }
+
 }
