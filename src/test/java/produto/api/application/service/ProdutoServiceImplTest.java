@@ -1,6 +1,5 @@
 package produto.api.application.service;
 
-import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import produto.api.adapters.in.dto.ProdutoDtoRequest;
 import produto.api.adapters.in.dto.ProdutoDtoResponse;
 import produto.api.adapters.in.mapper.Converter;
+import produto.api.adapters.in.mapper.UpdateConverter;
 import produto.api.adapters.out.entities.ProdutoEntity;
 import produto.api.application.domain.ProdutoDomain;
 import produto.api.application.infra.controller.exceptions.*;
@@ -19,6 +19,7 @@ import produto.api.out.ProdutoRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,6 +29,9 @@ class ProdutoServiceTest {
 
     @Mock
     private Converter converter;
+
+    @Mock
+    private UpdateConverter updateConverter;
 
     @Mock
     private ProdutoRepository repository;
@@ -180,6 +184,70 @@ class ProdutoServiceTest {
 
         verify(repository, times(1)).listaProduto();
         verify(converter, never()).domainParaDtoResponse(domainList);
+    }
+
+    @Test
+    @DisplayName("Deve encontrar um produto pelo id com sucesso")
+    void buscaProdutoPorIdCase1(){
+        ProdutoDtoResponse produtoDtoResponse = new ProdutoDtoResponse(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10),10);
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10),10);
+
+        when(repository.findById(produtoDtoResponse.id())).thenReturn(Optional.of(produtoDomain));
+        when(converter.domainParaDtoResponse(produtoDomain)).thenReturn(produtoDtoResponse);
+
+        var result = service.buscaProdutoPorId(produtoDtoResponse.id());
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(produtoDtoResponse);
+
+        verify(repository, times(1)).findById(produtoDtoResponse.id());
+        verify(converter, times(1)).domainParaDtoResponse(produtoDomain);
+    }
+
+    @Test
+    @DisplayName("Deve retornar uma exceção caso o produto não seja encontrado pelo id")
+    void buscaProdutoPorIdCase2(){
+        Long id = 2L;
+
+        when(repository.findById(id)).thenReturn(Optional.empty());
+
+        ProdutoNotFoundException exception = Assertions.assertThrows(ProdutoNotFoundException.class, () -> {
+            service.buscaProdutoPorId(id);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Produto com esse id não foi encontrado");
+
+        verify(repository, times(1)).findById(id);
+        verify(converter, never()).domainParaDtoResponse(any(ProdutoDomain.class));
+    }
+
+    @Test
+    @DisplayName("Deve atualizar os dados do produto caso todos os dados sejam alterados")
+    void atualizaProdutoPorIdCase1(){
+        ProdutoDtoRequest produtoDtoRequest = new ProdutoDtoRequest("Produto 2", "Tipo 2", new BigDecimal(20), 20);
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Produto 1", "Tipo 1", new BigDecimal(10), 10);
+        ProdutoEntity produtoEntity = new ProdutoEntity(produtoDomain.getId(), produtoDomain.getNomeProduto(), produtoDomain.getTipoProduto(), produtoDomain.getPreco(), produtoDomain.getQuantidadeEstoque());
+        ProdutoDomain produtoAtualizado = new ProdutoDomain(produtoEntity.getId(), produtoDtoRequest.getNomeProduto(), produtoDtoRequest.getTipoProduto(), produtoDtoRequest.getPreco(), produtoDtoRequest.getQuantidadeEstoque());
+
+        when(repository.findById(produtoDomain.getId())).thenReturn(Optional.of(produtoDomain));
+        when(converter.domainParaEntity(produtoDomain)).thenReturn(produtoEntity);
+        doNothing().when(updateConverter).updateConverter(produtoDtoRequest, produtoEntity);
+        when(converter.entityParaDomain(produtoEntity)).thenReturn(produtoAtualizado);
+        when(repository.atualizaProduto(any(ProdutoDomain.class))).thenReturn(produtoAtualizado);
+        when(converter.domainParaDtoRequest(produtoAtualizado)).thenReturn(produtoDtoRequest);
+
+        var result = service.atualizaProdutoPorId(produtoDtoRequest, produtoDomain.getId());
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(produtoDtoRequest);
+
+        verify(repository, times(1)).findById(produtoDomain.getId());
+        verify(converter, times(1)).domainParaEntity(produtoDomain);
+        verify(updateConverter, times(1)).updateConverter(produtoDtoRequest, produtoEntity);
+        verify(converter, times(1)).entityParaDomain(produtoEntity);
+        verify(repository, times(1)).atualizaProduto(any(ProdutoDomain.class));
+        verify(converter, times(1)).domainParaDtoRequest(produtoAtualizado);
+
     }
 
 }
