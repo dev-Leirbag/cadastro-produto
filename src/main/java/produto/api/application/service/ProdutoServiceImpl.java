@@ -63,11 +63,10 @@ public class ProdutoServiceImpl implements ProdutoService {
 
         updateConverter.updateConverter(data, produtoEntity);
 
-        ProdutoDomain produtoAtualizado = converter.entityParaDomain(produtoEntity);
+        ProdutoDomain produtoAtualizado = repository.atualizaProduto(
+                converter.entityParaDomain(produtoEntity));
 
-        ProdutoDomain produtoSalvo = repository.atualizaProduto(produtoAtualizado);
-
-        return converter.domainParaDtoRequest(produtoSalvo);
+        return converter.domainParaDtoRequest(produtoAtualizado);
     }
 
     @Override
