@@ -10,16 +10,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import produto.api.adapters.in.dto.ProdutoDtoRequest;
+import produto.api.adapters.in.dto.ProdutoDtoResponse;
 import produto.api.adapters.in.mapper.Converter;
 import produto.api.adapters.out.entities.ProdutoEntity;
 import produto.api.application.domain.ProdutoDomain;
-import produto.api.application.infra.controller.exceptions.PrecoInvalidException;
-import produto.api.application.infra.controller.exceptions.ProdutoExistsException;
-import produto.api.application.infra.controller.exceptions.QuantidadeEstoqueInvalidException;
-import produto.api.application.infra.controller.exceptions.TipoProdutoInvalidException;
+import produto.api.application.infra.controller.exceptions.*;
 import produto.api.out.ProdutoRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -146,6 +145,41 @@ class ProdutoServiceTest {
         verify(converter, times(1)).dtoRequestParaDomain(produtoDtoRequest);
         verify(repository, times(1)).existisByProduto(produtoDomain.getNomeProduto());
         verify(repository, never()).salvaProduto(any(ProdutoDomain.class));
+    }
+
+    @Test
+    @DisplayName("Deve retornar uma lista de produtos com sucesso")
+    void listaProdutoCase1(){
+        List<ProdutoDtoResponse> responseList = List.of(new ProdutoDtoResponse(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10),10));
+        List<ProdutoDomain> domainList = List.of(new ProdutoDomain(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10),10));
+
+        when(repository.listaProduto()).thenReturn(domainList);
+        when(converter.domainParaDtoResponse(domainList)).thenReturn(responseList);
+
+        var result = service.listaProduto();
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(responseList);
+
+        verify(repository, times(1)).listaProduto();
+        verify(converter, times(1)).domainParaDtoResponse(domainList);
+    }
+
+    @Test
+    @DisplayName("Não deve retornar uma lista caso esteja vazio")
+    void listaProdutoCase2(){
+        List<ProdutoDomain> domainList = List.of();
+
+        when(repository.listaProduto()).thenReturn(domainList);
+
+        ProdutoNotFoundException exception = Assertions.assertThrows(ProdutoNotFoundException.class, () -> {
+            service.listaProduto();
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Nenhum produto encontrado");
+
+        verify(repository, times(1)).listaProduto();
+        verify(converter, never()).domainParaDtoResponse(domainList);
     }
 
 }
