@@ -19,6 +19,7 @@ import produto.api.out.ProdutoRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -180,6 +181,42 @@ class ProdutoServiceTest {
 
         verify(repository, times(1)).listaProduto();
         verify(converter, never()).domainParaDtoResponse(domainList);
+    }
+
+    @Test
+    @DisplayName("Deve encontrar um produto pelo id com sucesso")
+    void buscaProdutoPorIdCase1(){
+        ProdutoDtoResponse produtoDtoResponse = new ProdutoDtoResponse(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10),10);
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10),10);
+
+        when(repository.findById(produtoDtoResponse.id())).thenReturn(Optional.of(produtoDomain));
+        when(converter.domainParaDtoResponse(produtoDomain)).thenReturn(produtoDtoResponse);
+
+        var result = service.buscaProdutoPorId(produtoDtoResponse.id());
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualTo(produtoDtoResponse);
+
+        verify(repository, times(1)).findById(produtoDtoResponse.id());
+        verify(converter, times(1)).domainParaDtoResponse(produtoDomain);
+    }
+
+    @Test
+    @DisplayName("Deve retornar uma exceção caso o produto não seja encontrado pelo id")
+    void buscaProdutoPorIdCase2(){
+        Long id = 2L;
+        ProdutoDtoResponse produtoDtoResponse = new ProdutoDtoResponse(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10),10);
+
+        when(repository.findById(id)).thenReturn(Optional.empty());
+
+        ProdutoNotFoundException exception = Assertions.assertThrows(ProdutoNotFoundException.class, () -> {
+            service.buscaProdutoPorId(id);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Produto com esse id não foi encontrado");
+
+        verify(repository, times(1)).findById(id);
+        verify(converter, never()).domainParaDtoResponse(any(ProdutoDomain.class));
     }
 
 }
