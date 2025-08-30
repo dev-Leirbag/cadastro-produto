@@ -39,6 +39,8 @@ public class ProdutoServiceImpl implements ProdutoService {
     public List<ProdutoDtoResponse> listaProduto() {
         List<ProdutoDomain> domainList = repository.listaProduto();
 
+        verificaLista(domainList);
+
         return converter.domainParaDtoResponse(domainList);
     }
 
@@ -103,6 +105,10 @@ public class ProdutoServiceImpl implements ProdutoService {
         List<ProdutoDomain> domainList = repository.buscaAvancada(nomeProduto, tipoProduto, min, max);
 
         return converter.domainParaDtoResponse(domainList);
+    }
+
+    private void verificaLista(List<ProdutoDomain> domainList){
+        if(domainList.isEmpty()) throw new ProdutoNotFoundException("Nenhum produto encontrado");
     }
 
     private void verificaCampos(ProdutoDomain produto){
