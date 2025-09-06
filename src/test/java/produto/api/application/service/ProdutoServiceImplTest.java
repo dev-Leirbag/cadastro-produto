@@ -298,4 +298,35 @@ class ProdutoServiceTest {
         verify(repository, never()).atualizaProduto(any(ProdutoDomain.class));
         verify(converter, never()).domainParaDtoRequest(any(ProdutoDomain.class));
     }
+
+    @Test
+    @DisplayName("Deve deletar um produto pelo ID com sucesso")
+    void deletaProdutoPorIdCase1(){
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10), 10);
+
+        when(repository.findById(produtoDomain.getId())).thenReturn(Optional.of(produtoDomain));
+        doNothing().when(repository).deletaProduto(produtoDomain);
+
+        service.deletaProdutoPorId(produtoDomain.getId());
+
+        verify(repository, times(1)).findById(produtoDomain.getId());
+        verify(repository, times(1)).deletaProduto(produtoDomain);
+    }
+    @Test
+    @DisplayName("Deve retornar um erro ao não encontro o produto pelo ID e não ser deletado")
+    void deletaProdutoPorIdCase2(){
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10), 10);
+
+        when(repository.findById(produtoDomain.getId())).thenReturn(Optional.empty());
+
+        ProdutoNotFoundException exception = Assertions.assertThrows(ProdutoNotFoundException.class, () -> {
+            service.deletaProdutoPorId(produtoDomain.getId());
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Produto com esse id não foi encontrado");
+
+        verify(repository, times(1)).findById(produtoDomain.getId());
+        verify(repository, never()).deletaProduto(produtoDomain);
+    }
+
 }
