@@ -247,7 +247,86 @@ class ProdutoServiceTest {
         verify(converter, times(1)).entityParaDomain(produtoEntity);
         verify(repository, times(1)).atualizaProduto(any(ProdutoDomain.class));
         verify(converter, times(1)).domainParaDtoRequest(produtoAtualizado);
+    }
 
+    @Test
+    @DisplayName("Deve atualizar o nome do produto com os outros dados sendo null, e retornar o nome produto atualizado e os dados restantes que existem")
+    void atualizaProdutoPorIdCase2(){
+        ProdutoDtoRequest produtoDtoRequest = new ProdutoDtoRequest("Produto 2", null ,null, null);
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Produto 1", "Tipo 1", new BigDecimal(10), 10);
+        ProdutoEntity produtoEntity = new ProdutoEntity(produtoDomain.getId(), produtoDomain.getNomeProduto(), produtoDomain.getTipoProduto(), produtoDomain.getPreco(), produtoDomain.getQuantidadeEstoque());
+        ProdutoDomain produtoAtualizado = new ProdutoDomain(produtoEntity.getId(), produtoDtoRequest.getNomeProduto(), produtoEntity.getTipoProduto(), produtoEntity.getPreco(), produtoEntity.getQuantidadeEstoque());
+        ProdutoDtoRequest produtoDtoRequestAtualizado = new ProdutoDtoRequest(produtoAtualizado.getNomeProduto(), produtoAtualizado.getTipoProduto(), produtoAtualizado.getPreco(), produtoAtualizado.getQuantidadeEstoque());
+
+        when(repository.findById(produtoDomain.getId())).thenReturn(Optional.of(produtoDomain));
+        when(converter.domainParaEntity(produtoDomain)).thenReturn(produtoEntity);
+        doNothing().when(updateConverter).updateConverter(produtoDtoRequest, produtoEntity);
+        when(converter.entityParaDomain(produtoEntity)).thenReturn(produtoAtualizado);
+        when(repository.atualizaProduto(any(ProdutoDomain.class))).thenReturn(produtoAtualizado);
+        when(converter.domainParaDtoRequest(produtoAtualizado)).thenReturn(produtoDtoRequestAtualizado);
+
+        var result = service.atualizaProdutoPorId(produtoDtoRequest, produtoDomain.getId());
+
+        assertThat(result).isNotNull();
+        assertThat(result.getNomeProduto()).isEqualTo(produtoDtoRequestAtualizado.getNomeProduto());
+
+        verify(repository, times(1)).findById(produtoDomain.getId());
+        verify(converter, times(1)).domainParaEntity(produtoDomain);
+        verify(updateConverter, times(1)).updateConverter(produtoDtoRequest, produtoEntity);
+        verify(converter, times(1)).entityParaDomain(produtoEntity);
+        verify(repository, times(1)).atualizaProduto(any(ProdutoDomain.class));
+        verify(converter, times(1)).domainParaDtoRequest(produtoAtualizado);
+    }
+
+    @Test
+    @DisplayName("Deve retornar um erro caso não seja encontrado o ID do produto e não é atualizado")
+    void atualizaProdutoPorIdCase3(){
+        ProdutoDtoRequest produtoDtoRequest = new ProdutoDtoRequest("Produto 2", null ,null, null);
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Produto 1", "Tipo 1", new BigDecimal(10), 10);
+        when(repository.findById(produtoDomain.getId())).thenReturn(Optional.empty());
+
+        ProdutoNotFoundException exception = Assertions.assertThrows(ProdutoNotFoundException.class, () -> {
+           service.atualizaProdutoPorId(produtoDtoRequest,produtoDomain.getId());
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Produto com esse id não foi encontrado");
+
+        verify(repository, times(1)).findById(produtoDomain.getId());
+        verify(converter, never()).domainParaEntity(any(ProdutoDomain.class));
+        verify(updateConverter, never()).updateConverter(any(ProdutoDtoRequest.class), any(ProdutoEntity.class));
+        verify(converter, never()).entityParaDomain(any(ProdutoEntity.class));
+        verify(repository, never()).atualizaProduto(any(ProdutoDomain.class));
+        verify(converter, never()).domainParaDtoRequest(any(ProdutoDomain.class));
+    }
+
+    @Test
+    @DisplayName("Deve deletar um produto pelo ID com sucesso")
+    void deletaProdutoPorIdCase1(){
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10), 10);
+
+        when(repository.findById(produtoDomain.getId())).thenReturn(Optional.of(produtoDomain));
+        doNothing().when(repository).deletaProduto(produtoDomain);
+
+        service.deletaProdutoPorId(produtoDomain.getId());
+
+        verify(repository, times(1)).findById(produtoDomain.getId());
+        verify(repository, times(1)).deletaProduto(produtoDomain);
+    }
+    @Test
+    @DisplayName("Deve retornar um erro ao não encontro o produto pelo ID e não ser deletado")
+    void deletaProdutoPorIdCase2(){
+        ProdutoDomain produtoDomain = new ProdutoDomain(1L,"Nome do Produto", "Tipo do Produto", new BigDecimal(10), 10);
+
+        when(repository.findById(produtoDomain.getId())).thenReturn(Optional.empty());
+
+        ProdutoNotFoundException exception = Assertions.assertThrows(ProdutoNotFoundException.class, () -> {
+            service.deletaProdutoPorId(produtoDomain.getId());
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("Produto com esse id não foi encontrado");
+
+        verify(repository, times(1)).findById(produtoDomain.getId());
+        verify(repository, never()).deletaProduto(produtoDomain);
     }
 
 }
