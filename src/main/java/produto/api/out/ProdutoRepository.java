@@ -30,4 +30,5 @@ public interface ProdutoRepository {
     List<ProdutoDomain> buscaPorPreco(BigDecimal min, BigDecimal max);
 
     List<ProdutoDomain> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max);
+
 }
