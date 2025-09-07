@@ -1,5 +1,7 @@
 package produto.api.adapters.out.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +15,7 @@ public interface ProdutoJpaRepository extends JpaRepository<ProdutoEntity, Long>
     boolean existsByNomeProduto(String nomeProduto);
 
     @Query("SELECT p FROM ProdutoEntity p WHERE UPPER(p.nomeProduto) LIKE UPPER(concat('%', :nome, '%'))")
-    List<ProdutoEntity> buscaPorNomeProduto(@Param("nome")String nome);
+    Page<ProdutoEntity> buscaPorNomeProduto(Pageable pageable, @Param("nome")String nome);
 
     @Query("SELECT p FROM ProdutoEntity p WHERE UPPER(p.tipoProduto) LIKE UPPER(concat('%', :tipoProduto, '%'))")
     List<ProdutoEntity> buscaProdutoPorTipo(@Param("tipoProduto") String tipoProduto);

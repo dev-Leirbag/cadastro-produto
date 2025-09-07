@@ -20,7 +20,7 @@ public interface ProdutoService {
     @Transactional
     void deletaProdutoPorId(Long id);
 
-    List<ProdutoDtoResponse> buscaProduto(String nomeProduto);
+    List<ProdutoDtoResponse> buscaProduto(int page, int size,String nomeProduto);
 
     List<ProdutoDtoResponse> buscaPorTipoProduto(String tipoProduto);
 

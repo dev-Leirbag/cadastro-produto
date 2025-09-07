@@ -25,7 +25,7 @@ public interface ProdutoRepository {
     @Transactional
     void deletaProduto(ProdutoDomain domain);
 
-    List<ProdutoDomain> buscarProdutoPorNome(String nome);
+    Page<ProdutoDomain> buscarProdutoPorNome(Pageable pageable,String nome);
 
     List<ProdutoDomain> buscaProdutoPorTipo(String tipo);
 
