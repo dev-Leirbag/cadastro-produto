@@ -31,6 +31,6 @@ public interface ProdutoRepository {
 
     Page<ProdutoDomain> buscaPorPreco(Pageable pageable,BigDecimal min, BigDecimal max);
 
-    List<ProdutoDomain> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max);
+    Page<ProdutoDomain> buscaAvancada(Pageable pageable,String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max);
 
 }

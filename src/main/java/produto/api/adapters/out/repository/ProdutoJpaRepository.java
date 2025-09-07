@@ -28,5 +28,5 @@ public interface ProdutoJpaRepository extends JpaRepository<ProdutoEntity, Long>
            "(:tipoProduto IS NULL OR UPPER(p.tipoProduto) LIKE UPPER(concat('%', :tipoProduto, '%'))) AND " +
            "(:min IS NULL OR p.preco >= :min) AND " +
            "(:max IS NULL OR p.preco <= :max)")
-    List<ProdutoEntity> buscaAvancada(@Param("nomeProduto") String nomeProduto, @Param("tipoProduto") String tipoProduto, @Param("min") BigDecimal min, @Param("max") BigDecimal max);
+    Page<ProdutoEntity> buscaAvancada(Pageable pageable, @Param("nomeProduto") String nomeProduto, @Param("tipoProduto") String tipoProduto, @Param("min") BigDecimal min, @Param("max") BigDecimal max);
 }

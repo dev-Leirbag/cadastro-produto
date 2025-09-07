@@ -106,10 +106,11 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
-    public List<ProdutoDtoResponse> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max) {
-        List<ProdutoDomain> domainList = repository.buscaAvancada(nomeProduto, tipoProduto, min, max);
+    public List<ProdutoDtoResponse> buscaAvancada(int page, int size,String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProdutoDomain> domainList = repository.buscaAvancada(pageable,nomeProduto, tipoProduto, min, max);
 
-        return converter.domainParaDtoResponse(domainList);
+        return domainList.map(converter::domainParaDtoResponse).toList();
     }
 
     private void verificaLista(Page<ProdutoDomain> domainList) {

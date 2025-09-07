@@ -84,9 +84,9 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
     }
 
     @Override
-    public List<ProdutoDomain> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max) {
-        List<ProdutoEntity> produtoEntityList = jpaRepository.buscaAvancada(nomeProduto, tipoProduto, min, max);
+    public Page<ProdutoDomain> buscaAvancada(Pageable pageable,String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max) {
+        Page<ProdutoEntity> produtoEntityList = jpaRepository.buscaAvancada(pageable,nomeProduto, tipoProduto, min, max);
 
-        return converter.entityParaDomain(produtoEntityList);
+        return produtoEntityList.map(converter::entityParaDomain);
     }
 }

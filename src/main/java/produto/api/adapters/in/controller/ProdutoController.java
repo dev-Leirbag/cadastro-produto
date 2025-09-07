@@ -38,8 +38,8 @@ public class ProdutoController {
     @ApiResponse(responseCode = "200", description = "Lista encontrada com sucesso")
     @ApiResponse(responseCode = "404", description = "Lista não encontrada ou vazia")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
-    public ResponseEntity<List<ProdutoDtoResponse>> listaProdutos(@RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "10")int size){
+    public ResponseEntity<List<ProdutoDtoResponse>> listaProdutos(@RequestParam(defaultValue = "0",required = false) int page,
+                                                                  @RequestParam(defaultValue = "10",required = false) int size){
         return ResponseEntity.ok(service.listaProduto(page, size));
     }
 
@@ -75,8 +75,8 @@ public class ProdutoController {
     @Operation(summary = "Busca produto pelo nome", description = "Busca produto pelo nome")
     @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
-    public ResponseEntity<List<ProdutoDtoResponse>> buscaProdutoPorNome(@RequestParam(defaultValue = "0") int page,
-                                                                        @RequestParam(defaultValue = "10") int size,
+    public ResponseEntity<List<ProdutoDtoResponse>> buscaProdutoPorNome(@RequestParam(defaultValue = "0",required = false) int page,
+                                                                        @RequestParam(defaultValue = "10",required = false) int size,
                                                                         @RequestParam(value = "nomeProduto") String nomeProduto){
         return ResponseEntity.ok(service.buscaProduto(page,size,nomeProduto));
     }
@@ -85,8 +85,8 @@ public class ProdutoController {
     @Operation(summary = "Busca pelo tipo do produto", description = "Busca pelo tipo do produto")
     @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
-    public ResponseEntity<List<ProdutoDtoResponse>> buscaPorTipoProduto(@RequestParam(defaultValue = "0") int page,
-                                                                        @RequestParam(defaultValue = "10") int size,
+    public ResponseEntity<List<ProdutoDtoResponse>> buscaPorTipoProduto(@RequestParam(defaultValue = "0",required = false) int page,
+                                                                        @RequestParam(defaultValue = "10",required = false) int size,
                                                                         @RequestParam(value = "tipoProduto") String tipoProduto){
         return ResponseEntity.ok(service.buscaPorTipoProduto(page,size,tipoProduto));
     }
@@ -95,8 +95,8 @@ public class ProdutoController {
     @Operation(summary = "Busca pelo preço do produto", description = "Busca pelo preço do produto")
     @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
-    public ResponseEntity<List<ProdutoDtoResponse>> buscaProdutoPorPreco(@RequestParam(defaultValue = "0") int page,
-                                                                         @RequestParam(defaultValue = "10") int size,
+    public ResponseEntity<List<ProdutoDtoResponse>> buscaProdutoPorPreco(@RequestParam(defaultValue = "0",required = false) int page,
+                                                                         @RequestParam(defaultValue = "10",required = false) int size,
                                                                          @RequestParam(value = "min")BigDecimal min,
                                                                          @RequestParam(value = "max")BigDecimal max){
         return ResponseEntity.ok(service.buscaPorPreco(page,size,min, max));
@@ -106,10 +106,12 @@ public class ProdutoController {
     @Operation(summary = "Busca pelo preço, tipo, ou nome do produto", description = "Busca pelo preço, tipo, ou nome do produto")
     @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
-    public ResponseEntity<List<ProdutoDtoResponse>> buscaAvancada(@RequestParam(value = "nomeProduto", required = false)String nomeProduto,
+    public ResponseEntity<List<ProdutoDtoResponse>> buscaAvancada(@RequestParam(defaultValue = "0",required = false) int page,
+                                                                  @RequestParam(defaultValue = "10",required = false) int size,
+                                                                  @RequestParam(value = "nomeProduto", required = false)String nomeProduto,
                                                                   @RequestParam(value = "tipoProduto", required = false)String tipoProduto,
                                                                   @RequestParam(value = "min", required = false)BigDecimal min,
                                                                   @RequestParam(value = "max", required = false)BigDecimal max){
-        return ResponseEntity.ok(service.buscaAvancada(nomeProduto, tipoProduto, min, max));
+        return ResponseEntity.ok(service.buscaAvancada(page,size,nomeProduto, tipoProduto, min, max));
     }
 }
