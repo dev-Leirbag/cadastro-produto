@@ -1,6 +1,9 @@
 package produto.api.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import produto.api.adapters.in.dto.ProdutoDtoRequest;
 import produto.api.adapters.in.dto.ProdutoDtoResponse;
@@ -14,7 +17,6 @@ import produto.api.out.ProdutoRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +38,13 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
-    public List<ProdutoDtoResponse> listaProduto() {
-        List<ProdutoDomain> domainList = repository.listaProduto();
+    public List<ProdutoDtoResponse> listaProduto(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProdutoDomain> domainList = repository.listaProduto(pageable);
 
         verificaLista(domainList);
 
-        return converter.domainParaDtoResponse(domainList);
+        return domainList.map(converter::domainParaDtoResponse).toList();
     }
 
     @Override
@@ -79,34 +82,38 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
-    public List<ProdutoDtoResponse> buscaProduto(String nomeProduto) {
-            List<ProdutoDomain> domainList = repository.buscarProdutoPorNome(nomeProduto);
+    public List<ProdutoDtoResponse> buscaProduto(int page, int size,String nomeProduto) {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<ProdutoDomain> domainList = repository.buscarProdutoPorNome(pageable,nomeProduto);
 
-            return converter.domainParaDtoResponse(domainList);
+            return domainList.map(converter::domainParaDtoResponse).toList();
     }
 
     @Override
-    public List<ProdutoDtoResponse> buscaPorTipoProduto(String tipoProduto) {
-        List<ProdutoDomain> domainList = repository.buscaProdutoPorTipo(tipoProduto);
+    public List<ProdutoDtoResponse> buscaPorTipoProduto(int page, int size,String tipoProduto) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProdutoDomain> domainList = repository.buscaProdutoPorTipo(pageable,tipoProduto);
 
-        return converter.domainParaDtoResponse(domainList);
+        return domainList.map(converter::domainParaDtoResponse).toList();
     }
 
     @Override
-    public List<ProdutoDtoResponse> buscaPorPreco(BigDecimal min, BigDecimal max) {
-        List<ProdutoDomain> domainList = repository.buscaPorPreco(min, max);
+    public List<ProdutoDtoResponse> buscaPorPreco(int page, int size,BigDecimal min, BigDecimal max) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProdutoDomain> domainList = repository.buscaPorPreco(pageable,min, max);
 
-        return converter.domainParaDtoResponse(domainList);
+        return domainList.map(converter::domainParaDtoResponse).toList();
     }
 
     @Override
-    public List<ProdutoDtoResponse> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max) {
-        List<ProdutoDomain> domainList = repository.buscaAvancada(nomeProduto, tipoProduto, min, max);
+    public List<ProdutoDtoResponse> buscaAvancada(int page, int size,String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProdutoDomain> domainList = repository.buscaAvancada(pageable,nomeProduto, tipoProduto, min, max);
 
-        return converter.domainParaDtoResponse(domainList);
+        return domainList.map(converter::domainParaDtoResponse).toList();
     }
 
-    private void verificaLista(List<ProdutoDomain> domainList) {
+    private void verificaLista(Page<ProdutoDomain> domainList) {
         if (domainList.isEmpty()) throw new ProdutoNotFoundException("Nenhum produto encontrado");
     }
 

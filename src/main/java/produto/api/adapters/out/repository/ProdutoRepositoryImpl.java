@@ -1,6 +1,8 @@
 package produto.api.adapters.out.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import produto.api.adapters.in.mapper.Converter;
 import produto.api.adapters.out.entities.ProdutoEntity;
@@ -33,10 +35,10 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
     }
 
     @Override
-    public List<ProdutoDomain> listaProduto() {
-        List<ProdutoEntity> produtoEntityList = jpaRepository.findAll();
+    public Page<ProdutoDomain> listaProduto(Pageable pageable) {
+        Page<ProdutoEntity> produtoEntityList = jpaRepository.findAll(pageable);
 
-        return converter.entityParaDomain(produtoEntityList);
+        return produtoEntityList.map(converter::entityParaDomain);
     }
 
     @Override
@@ -61,30 +63,30 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
     }
 
     @Override
-    public List<ProdutoDomain> buscarProdutoPorNome(String nome) {
-        List<ProdutoEntity> produtoEntityList = jpaRepository.buscaPorNomeProduto(nome);
+    public Page<ProdutoDomain> buscarProdutoPorNome(Pageable pageable,String nome) {
+        Page<ProdutoEntity> produtoEntityList = jpaRepository.buscaPorNomeProduto(pageable,nome);
 
-        return converter.entityParaDomain(produtoEntityList);
+        return produtoEntityList.map(converter::entityParaDomain);
     }
 
     @Override
-    public List<ProdutoDomain> buscaProdutoPorTipo(String tipo) {
-        List<ProdutoEntity> produtoEntityList = jpaRepository.buscaProdutoPorTipo(tipo);
+    public Page<ProdutoDomain> buscaProdutoPorTipo(Pageable pageable,String tipo) {
+        Page<ProdutoEntity> produtoEntityList = jpaRepository.buscaProdutoPorTipo(pageable,tipo);
 
-        return converter.entityParaDomain(produtoEntityList);
+        return produtoEntityList.map(converter::entityParaDomain);
     }
 
     @Override
-    public List<ProdutoDomain> buscaPorPreco(BigDecimal min, BigDecimal max) {
-        List<ProdutoEntity> produtoEntityList = jpaRepository.buscaPorPreco(min, max);
+    public Page<ProdutoDomain> buscaPorPreco(Pageable pageable,BigDecimal min, BigDecimal max) {
+        Page<ProdutoEntity> produtoEntityList = jpaRepository.buscaPorPreco(pageable,min, max);
 
-        return converter.entityParaDomain(produtoEntityList);
+        return produtoEntityList.map(converter::entityParaDomain);
     }
 
     @Override
-    public List<ProdutoDomain> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max) {
-        List<ProdutoEntity> produtoEntityList = jpaRepository.buscaAvancada(nomeProduto, tipoProduto, min, max);
+    public Page<ProdutoDomain> buscaAvancada(Pageable pageable,String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max) {
+        Page<ProdutoEntity> produtoEntityList = jpaRepository.buscaAvancada(pageable,nomeProduto, tipoProduto, min, max);
 
-        return converter.entityParaDomain(produtoEntityList);
+        return produtoEntityList.map(converter::entityParaDomain);
     }
 }
