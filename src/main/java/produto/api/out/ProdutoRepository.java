@@ -29,7 +29,7 @@ public interface ProdutoRepository {
 
     Page<ProdutoDomain> buscaProdutoPorTipo(Pageable pageable,String tipo);
 
-    List<ProdutoDomain> buscaPorPreco(BigDecimal min, BigDecimal max);
+    Page<ProdutoDomain> buscaPorPreco(Pageable pageable,BigDecimal min, BigDecimal max);
 
     List<ProdutoDomain> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max);
 

@@ -98,10 +98,11 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
-    public List<ProdutoDtoResponse> buscaPorPreco(BigDecimal min, BigDecimal max) {
-        List<ProdutoDomain> domainList = repository.buscaPorPreco(min, max);
+    public List<ProdutoDtoResponse> buscaPorPreco(int page, int size,BigDecimal min, BigDecimal max) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProdutoDomain> domainList = repository.buscaPorPreco(pageable,min, max);
 
-        return converter.domainParaDtoResponse(domainList);
+        return domainList.map(converter::domainParaDtoResponse).toList();
     }
 
     @Override

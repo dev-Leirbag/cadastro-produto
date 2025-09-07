@@ -95,8 +95,11 @@ public class ProdutoController {
     @Operation(summary = "Busca pelo preço do produto", description = "Busca pelo preço do produto")
     @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
-    public ResponseEntity<List<ProdutoDtoResponse>> buscaProdutoPorPreco(@RequestParam(value = "min")BigDecimal min,@RequestParam(value = "max")BigDecimal max){
-        return ResponseEntity.ok(service.buscaPorPreco(min, max));
+    public ResponseEntity<List<ProdutoDtoResponse>> buscaProdutoPorPreco(@RequestParam(defaultValue = "0") int page,
+                                                                         @RequestParam(defaultValue = "10") int size,
+                                                                         @RequestParam(value = "min")BigDecimal min,
+                                                                         @RequestParam(value = "max")BigDecimal max){
+        return ResponseEntity.ok(service.buscaPorPreco(page,size,min, max));
     }
 
     @GetMapping("/produto/buscar/filtro")

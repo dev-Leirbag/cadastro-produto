@@ -77,10 +77,10 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
     }
 
     @Override
-    public List<ProdutoDomain> buscaPorPreco(BigDecimal min, BigDecimal max) {
-        List<ProdutoEntity> produtoEntityList = jpaRepository.buscaPorPreco(min, max);
+    public Page<ProdutoDomain> buscaPorPreco(Pageable pageable,BigDecimal min, BigDecimal max) {
+        Page<ProdutoEntity> produtoEntityList = jpaRepository.buscaPorPreco(pageable,min, max);
 
-        return converter.entityParaDomain(produtoEntityList);
+        return produtoEntityList.map(converter::entityParaDomain);
     }
 
     @Override

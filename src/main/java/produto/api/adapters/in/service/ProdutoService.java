@@ -24,7 +24,7 @@ public interface ProdutoService {
 
     List<ProdutoDtoResponse> buscaPorTipoProduto(int page, int size,String tipoProduto);
 
-    List<ProdutoDtoResponse> buscaPorPreco(BigDecimal min, BigDecimal max);
+    List<ProdutoDtoResponse> buscaPorPreco(int page, int size,BigDecimal min, BigDecimal max);
 
     List<ProdutoDtoResponse> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max);
 }
