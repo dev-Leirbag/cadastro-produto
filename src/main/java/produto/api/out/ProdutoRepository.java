@@ -2,6 +2,8 @@ package produto.api.out;
 
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import produto.api.application.domain.ProdutoDomain;
 
 import java.math.BigDecimal;
@@ -14,7 +16,7 @@ public interface ProdutoRepository {
 
     boolean existisByProduto(String nomeProduto);
 
-    List<ProdutoDomain> listaProduto();
+    Page<ProdutoDomain> listaProduto(Pageable pageable);
 
     Optional<ProdutoDomain> findById(Long id);
 
@@ -23,12 +25,12 @@ public interface ProdutoRepository {
     @Transactional
     void deletaProduto(ProdutoDomain domain);
 
-    List<ProdutoDomain> buscarProdutoPorNome(String nome);
+    Page<ProdutoDomain> buscarProdutoPorNome(Pageable pageable,String nome);
 
-    List<ProdutoDomain> buscaProdutoPorTipo(String tipo);
+    Page<ProdutoDomain> buscaProdutoPorTipo(Pageable pageable,String tipo);
 
-    List<ProdutoDomain> buscaPorPreco(BigDecimal min, BigDecimal max);
+    Page<ProdutoDomain> buscaPorPreco(Pageable pageable,BigDecimal min, BigDecimal max);
 
-    List<ProdutoDomain> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max);
+    Page<ProdutoDomain> buscaAvancada(Pageable pageable,String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max);
 
 }

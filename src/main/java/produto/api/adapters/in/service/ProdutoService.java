@@ -11,7 +11,7 @@ public interface ProdutoService {
 
     ProdutoDtoRequest criaProduto (ProdutoDtoRequest request);
 
-    List<ProdutoDtoResponse> listaProduto();
+    List<ProdutoDtoResponse> listaProduto(int page, int size);
 
     ProdutoDtoResponse buscaProdutoPorId(Long id);
 
@@ -20,11 +20,11 @@ public interface ProdutoService {
     @Transactional
     void deletaProdutoPorId(Long id);
 
-    List<ProdutoDtoResponse> buscaProduto(String nomeProduto);
+    List<ProdutoDtoResponse> buscaProduto(int page, int size,String nomeProduto);
 
-    List<ProdutoDtoResponse> buscaPorTipoProduto(String tipoProduto);
+    List<ProdutoDtoResponse> buscaPorTipoProduto(int page, int size,String tipoProduto);
 
-    List<ProdutoDtoResponse> buscaPorPreco(BigDecimal min, BigDecimal max);
+    List<ProdutoDtoResponse> buscaPorPreco(int page, int size,BigDecimal min, BigDecimal max);
 
-    List<ProdutoDtoResponse> buscaAvancada(String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max);
+    List<ProdutoDtoResponse> buscaAvancada(int page, int size,String nomeProduto, String tipoProduto, BigDecimal min, BigDecimal max);
 }
