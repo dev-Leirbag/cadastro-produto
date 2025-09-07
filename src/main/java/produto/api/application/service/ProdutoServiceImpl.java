@@ -46,7 +46,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public ProdutoDtoResponse buscaProdutoPorId(Long id) {
-        ProdutoDomain produtoDomain = repository.findById(id).orElseThrow(() ->{
+        ProdutoDomain produtoDomain = repository.findById(id).orElseThrow(() -> {
             throw new ProdutoNotFoundException("Produto com esse id não foi encontrado");
         });
 
@@ -54,8 +54,8 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
-    public ProdutoDtoRequest atualizaProdutoPorId(ProdutoDtoRequest data,Long id) {
-        ProdutoDomain produtoDomain = repository.findById(id).orElseThrow(() ->{
+    public ProdutoDtoRequest atualizaProdutoPorId(ProdutoDtoRequest data, Long id) {
+        ProdutoDomain produtoDomain = repository.findById(id).orElseThrow(() -> {
             throw new ProdutoNotFoundException("Produto com esse id não foi encontrado");
         });
 
@@ -71,7 +71,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public void deletaProdutoPorId(Long id) {
-        ProdutoDomain produtoDomain = repository.findById(id).orElseThrow(() ->{
+        ProdutoDomain produtoDomain = repository.findById(id).orElseThrow(() -> {
             throw new ProdutoNotFoundException("Produto com esse id não foi encontrado");
         });
 
@@ -80,9 +80,9 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     public List<ProdutoDtoResponse> buscaProduto(String nomeProduto) {
-        List<ProdutoDomain> domainList = repository.buscarProdutoPorNome(nomeProduto);
+            List<ProdutoDomain> domainList = repository.buscarProdutoPorNome(nomeProduto);
 
-        return converter.domainParaDtoResponse(domainList);
+            return converter.domainParaDtoResponse(domainList);
     }
 
     @Override
@@ -106,23 +106,25 @@ public class ProdutoServiceImpl implements ProdutoService {
         return converter.domainParaDtoResponse(domainList);
     }
 
-    private void verificaLista(List<ProdutoDomain> domainList){
-        if(domainList.isEmpty()) throw new ProdutoNotFoundException("Nenhum produto encontrado");
+    private void verificaLista(List<ProdutoDomain> domainList) {
+        if (domainList.isEmpty()) throw new ProdutoNotFoundException("Nenhum produto encontrado");
     }
 
-    private void verificaCampos(ProdutoDomain produto){
+    private void verificaCampos(ProdutoDomain produto) {
         String nomeProduto = produto.getNomeProduto();
         String tipoProduto = produto.getTipoProduto();
         BigDecimal preco = produto.getPreco();
         Integer quantidadeEstoque = produto.getQuantidadeEstoque();
 
-        if(nomeProduto.isBlank()) throw new NomeProdutoInvalidException("O nome do produto não pode estar vazio!");
-        if(repository.existisByProduto(nomeProduto)) throw new ProdutoExistsException("Esse produto já existe");
+        if (nomeProduto.isBlank()) throw new NomeProdutoInvalidException("O nome do produto não pode estar vazio!");
+        if (repository.existisByProduto(nomeProduto)) throw new ProdutoExistsException("Esse produto já existe");
 
-        if(tipoProduto.isBlank()) throw new TipoProdutoInvalidException("O tipo do produto não pode estar vazio!");
+        if (tipoProduto.isBlank()) throw new TipoProdutoInvalidException("O tipo do produto não pode estar vazio!");
 
-        if(preco == null || preco.compareTo(BigDecimal.ZERO) <= 0) throw new PrecoInvalidException("O preço não pode ser nulo ou abaixo de zero");
+        if (preco == null || preco.compareTo(BigDecimal.ZERO) <= 0)
+            throw new PrecoInvalidException("O preço não pode ser nulo ou abaixo de zero");
 
-        if(quantidadeEstoque == null || quantidadeEstoque <= 0) throw new QuantidadeEstoqueInvalidException("A quantidade não pode ser nula ou abaixo de zero");
+        if (quantidadeEstoque == null || quantidadeEstoque <= 0)
+            throw new QuantidadeEstoqueInvalidException("A quantidade não pode ser nula ou abaixo de zero");
     }
 }
