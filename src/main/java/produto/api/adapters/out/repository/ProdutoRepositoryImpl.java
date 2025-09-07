@@ -1,6 +1,8 @@
 package produto.api.adapters.out.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import produto.api.adapters.in.mapper.Converter;
 import produto.api.adapters.out.entities.ProdutoEntity;
@@ -33,10 +35,10 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
     }
 
     @Override
-    public List<ProdutoDomain> listaProduto() {
-        List<ProdutoEntity> produtoEntityList = jpaRepository.findAll();
+    public Page<ProdutoDomain> listaProduto(Pageable pageable) {
+        Page<ProdutoEntity> produtoEntityList = jpaRepository.findAll(pageable);
 
-        return converter.entityParaDomain(produtoEntityList);
+        return produtoEntityList.map(converter::entityParaDomain);
     }
 
     @Override

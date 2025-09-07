@@ -2,6 +2,8 @@ package produto.api.out;
 
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import produto.api.application.domain.ProdutoDomain;
 
 import java.math.BigDecimal;
@@ -14,7 +16,7 @@ public interface ProdutoRepository {
 
     boolean existisByProduto(String nomeProduto);
 
-    List<ProdutoDomain> listaProduto();
+    Page<ProdutoDomain> listaProduto(Pageable pageable);
 
     Optional<ProdutoDomain> findById(Long id);
 

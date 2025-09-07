@@ -11,7 +11,7 @@ public interface ProdutoService {
 
     ProdutoDtoRequest criaProduto (ProdutoDtoRequest request);
 
-    List<ProdutoDtoResponse> listaProduto();
+    List<ProdutoDtoResponse> listaProduto(int page, int size);
 
     ProdutoDtoResponse buscaProdutoPorId(Long id);
 

@@ -1,6 +1,9 @@
 package produto.api.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import produto.api.adapters.in.dto.ProdutoDtoRequest;
 import produto.api.adapters.in.dto.ProdutoDtoResponse;
@@ -14,7 +17,6 @@ import produto.api.out.ProdutoRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +38,13 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
-    public List<ProdutoDtoResponse> listaProduto() {
-        List<ProdutoDomain> domainList = repository.listaProduto();
+    public List<ProdutoDtoResponse> listaProduto(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProdutoDomain> domainList = repository.listaProduto(pageable);
 
         verificaLista(domainList);
 
-        return converter.domainParaDtoResponse(domainList);
+        return domainList.map(converter::domainParaDtoResponse).toList();
     }
 
     @Override
@@ -106,7 +109,7 @@ public class ProdutoServiceImpl implements ProdutoService {
         return converter.domainParaDtoResponse(domainList);
     }
 
-    private void verificaLista(List<ProdutoDomain> domainList) {
+    private void verificaLista(Page<ProdutoDomain> domainList) {
         if (domainList.isEmpty()) throw new ProdutoNotFoundException("Nenhum produto encontrado");
     }
 

@@ -38,8 +38,9 @@ public class ProdutoController {
     @ApiResponse(responseCode = "200", description = "Lista encontrada com sucesso")
     @ApiResponse(responseCode = "404", description = "Lista não encontrada ou vazia")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
-    public ResponseEntity<List<ProdutoDtoResponse>> listaProdutos(){
-        return ResponseEntity.ok(service.listaProduto());
+    public ResponseEntity<List<ProdutoDtoResponse>> listaProdutos(@RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "10")int size){
+        return ResponseEntity.ok(service.listaProduto(page, size));
     }
 
     @GetMapping("/produto/{id}")
