@@ -18,7 +18,7 @@ public interface ProdutoJpaRepository extends JpaRepository<ProdutoEntity, Long>
     Page<ProdutoEntity> buscaPorNomeProduto(Pageable pageable, @Param("nome")String nome);
 
     @Query("SELECT p FROM ProdutoEntity p WHERE UPPER(p.tipoProduto) LIKE UPPER(concat('%', :tipoProduto, '%'))")
-    List<ProdutoEntity> buscaProdutoPorTipo(@Param("tipoProduto") String tipoProduto);
+    Page<ProdutoEntity> buscaProdutoPorTipo(Pageable pageable, @Param("tipoProduto") String tipoProduto);
 
     @Query("SELECT p FROM ProdutoEntity p WHERE p.preco >= :min AND p.preco <= :max")
     List<ProdutoEntity> buscaPorPreco(@Param("min") BigDecimal min, @Param("max") BigDecimal max);

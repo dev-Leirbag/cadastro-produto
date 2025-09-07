@@ -70,10 +70,10 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
     }
 
     @Override
-    public List<ProdutoDomain> buscaProdutoPorTipo(String tipo) {
-        List<ProdutoEntity> produtoEntityList = jpaRepository.buscaProdutoPorTipo(tipo);
+    public Page<ProdutoDomain> buscaProdutoPorTipo(Pageable pageable,String tipo) {
+        Page<ProdutoEntity> produtoEntityList = jpaRepository.buscaProdutoPorTipo(pageable,tipo);
 
-        return converter.entityParaDomain(produtoEntityList);
+        return produtoEntityList.map(converter::entityParaDomain);
     }
 
     @Override

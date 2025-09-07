@@ -27,7 +27,7 @@ public interface ProdutoRepository {
 
     Page<ProdutoDomain> buscarProdutoPorNome(Pageable pageable,String nome);
 
-    List<ProdutoDomain> buscaProdutoPorTipo(String tipo);
+    Page<ProdutoDomain> buscaProdutoPorTipo(Pageable pageable,String tipo);
 
     List<ProdutoDomain> buscaPorPreco(BigDecimal min, BigDecimal max);
 

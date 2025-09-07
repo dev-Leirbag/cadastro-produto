@@ -90,10 +90,11 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
-    public List<ProdutoDtoResponse> buscaPorTipoProduto(String tipoProduto) {
-        List<ProdutoDomain> domainList = repository.buscaProdutoPorTipo(tipoProduto);
+    public List<ProdutoDtoResponse> buscaPorTipoProduto(int page, int size,String tipoProduto) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProdutoDomain> domainList = repository.buscaProdutoPorTipo(pageable,tipoProduto);
 
-        return converter.domainParaDtoResponse(domainList);
+        return domainList.map(converter::domainParaDtoResponse).toList();
     }
 
     @Override

@@ -22,7 +22,7 @@ public interface ProdutoService {
 
     List<ProdutoDtoResponse> buscaProduto(int page, int size,String nomeProduto);
 
-    List<ProdutoDtoResponse> buscaPorTipoProduto(String tipoProduto);
+    List<ProdutoDtoResponse> buscaPorTipoProduto(int page, int size,String tipoProduto);
 
     List<ProdutoDtoResponse> buscaPorPreco(BigDecimal min, BigDecimal max);
 
