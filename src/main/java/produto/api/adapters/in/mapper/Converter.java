@@ -33,23 +33,5 @@ public interface Converter {
 
     //ProdutoDtoResponse
     ProdutoDtoResponse domainParaDtoResponse(ProdutoDomain domain);
-    List<ProdutoDtoResponse> domainParaDtoResponse(List<ProdutoDomain> domains);
-
-    //ReservaDomain
-    ReservaProdutoDomain dtoRequestParaDomain(ReservaRequestDto request);
-    ReservaProdutoDomain dtoResponseParaDomain(ReservaResponseDto response);
-    ReservaProdutoDomain entityParaDomain(ReservaProdutoEntity entity);
-
-    //ReservaEntity
-    ReservaProdutoEntity domainParaEntity(ReservaProdutoDomain domain);
-
-    //ReservaResponse
-    ReservaResponseDto domainParaDtoReservaResponse(ReservaProdutoDomain domain);
-
-    //ReservaRequest
-    ReservaRequestDto domainParaDtoReservaRequest(ReservaProdutoDomain domain);
-
-    ReservaItemEntity domainParaEntity(ReservaItemDomain domain);
-    ReservaItemDomain entityParaDomain(ReservaItemEntity entity);
 
 }

@@ -59,8 +59,8 @@ public class ReservaServiceImpl implements ReservaService {
 
             ReservaItemEntity itemEntity = new ReservaItemEntity();
             itemEntity.setProduto_id(produtoEncontrado.getId());
-            itemEntity.setNome_Produto(produtoEncontrado.getNomeProduto());
-            itemEntity.setTipo_Produto(produtoEncontrado.getTipoProduto());
+            itemEntity.setNome_produto(produtoEncontrado.getNomeProduto());
+            itemEntity.setTipo_produto(produtoEncontrado.getTipoProduto());
             itemEntity.setQuantidade(item.getQuantidade());
             itemEntity.setPreco_unitario(produtoEncontrado.getPreco());
             itemEntity.setValor_total_item(valorTotalItem);
@@ -79,7 +79,7 @@ public class ReservaServiceImpl implements ReservaService {
         ReservaProdutoEntity entitySalvo = reservaRepository.salvaReserva(reservaEntity);
 
         List<ProdutoReservaDto> produtosDto = entitySalvo.getItens().stream()
-                .map(i -> new ProdutoReservaDto(i.getProduto_id(), i.getNome_Produto(), i.getTipo_Produto()))
+                .map(i -> new ProdutoReservaDto(i.getProduto_id(), i.getNome_produto(), i.getTipo_produto()))
                 .toList();
 
         return new ReservaResponseDto(
