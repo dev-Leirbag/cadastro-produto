@@ -9,7 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import produto.api.adapters.in.dto.ProdutoDtoRequest;
 import produto.api.adapters.in.dto.ProdutoDtoResponse;
+import produto.api.adapters.in.dto.ReservaRequestDto;
+import produto.api.adapters.in.dto.ReservaResponseDto;
 import produto.api.adapters.in.service.ProdutoService;
+import produto.api.adapters.in.service.ReservaService;
 import produto.api.application.infra.config.SecurityConfig;
 
 import java.math.BigDecimal;
@@ -23,6 +26,7 @@ import java.util.List;
 public class ProdutoController {
 
     private final ProdutoService service;
+    private final ReservaService reservaService;
 
     @PostMapping("/produto")
     @Operation(summary = "Cria um produto", description = "Cria e salva um produto")
@@ -32,6 +36,13 @@ public class ProdutoController {
     public ResponseEntity<ProdutoDtoRequest> criaProduto(@RequestBody ProdutoDtoRequest data){
         return ResponseEntity.ok(service.criaProduto(data));
     }
+
+    @PostMapping("/produto/reserva")
+    public ResponseEntity<ReservaResponseDto> reservaProduto(@RequestBody ReservaRequestDto data,
+                                                             @RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(reservaService.reservaProduto(data, token));
+    }
+
 
     @GetMapping("/produto/all")
     @Operation(summary = "Lista todos os produtos", description = "Lista todos os produtos existentes")

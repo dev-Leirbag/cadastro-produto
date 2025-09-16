@@ -1,0 +1,22 @@
+package produto.api.adapters.out.repository;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+import produto.api.adapters.in.mapper.Converter;
+import produto.api.adapters.out.entities.ReservaProdutoEntity;
+import produto.api.out.ReservaRepository;
+
+@Repository
+@RequiredArgsConstructor
+public class ReservaRepositoryImpl implements ReservaRepository {
+
+    private final ReservaJpaRepository jpaRepository;
+    private final Converter converter;
+
+    @Override
+    public ReservaProdutoEntity salvaReserva(ReservaProdutoEntity entity) {
+        ReservaProdutoEntity entitySalvo = jpaRepository.save(entity);
+
+        return entitySalvo;
+    }
+}
