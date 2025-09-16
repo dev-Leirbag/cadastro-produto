@@ -33,6 +33,7 @@ public class ProdutoController {
         return ResponseEntity.ok(service.criaProduto(data));
     }
 
+
     @GetMapping("/produto/all")
     @Operation(summary = "Lista todos os produtos", description = "Lista todos os produtos existentes")
     @ApiResponse(responseCode = "200", description = "Lista encontrada com sucesso")

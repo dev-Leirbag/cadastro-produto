@@ -4,7 +4,9 @@ import org.mapstruct.Mapper;
 import produto.api.adapters.in.dto.ProdutoDtoRequest;
 import produto.api.adapters.in.dto.ProdutoDtoResponse;
 import produto.api.adapters.out.entities.ProdutoEntity;
+import produto.api.adapters.out.entities.ReservaProdutoEntity;
 import produto.api.application.domain.ProdutoDomain;
+import produto.api.application.domain.ReservaProdutoDomain;
 
 import java.util.List;
 
@@ -28,5 +30,4 @@ public interface Converter {
     //ProdutoDtoResponse
     ProdutoDtoResponse domainParaDtoResponse(ProdutoDomain domain);
     List<ProdutoDtoResponse> domainParaDtoResponse(List<ProdutoDomain> domains);
-
 }
