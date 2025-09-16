@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "tb_reserva_produto")
+@Table(name = "tb_reserva")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -18,11 +20,10 @@ public class ReservaProdutoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reserva_id;
 
-    private Long produto_id;
-
-    private Integer quantidade;
-
+    private String email_usuario;
     private BigDecimal valor_total;
 
-    private String email_usuario;
+    @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReservaItemEntity> itens = new ArrayList<>();
+
 }
