@@ -23,8 +23,8 @@ public class ReservaItemEntity {
     private ReservaProdutoEntity reserva;
 
     private Long produto_id;
-    private String nome_Produto;
-    private String tipo_Produto;
+    private String nome_produto;
+    private String tipo_produto;
     private Integer quantidade;
     private BigDecimal preco_unitario;
     private BigDecimal valor_total_item;
