@@ -14,6 +14,7 @@ construída com **Java 17 + Spring Boot**, utilizando **Spring Data JPA**,
 - Flyway
 - Docker & Docker Compose
 - PostgreSQL
+- Swagger / OpenAPI (documentação e testes de endpoints)
 - JUnit & Mockito (testes)
 
 ---
@@ -45,7 +46,7 @@ O fluxo de utilização integrado é o seguinte:
    - O serviço de **usuário** roda na porta `9090`.  
    - O serviço de **produtos** roda na porta `9091`.
 
-2. Cadastre um usuário na API de cadastro-usuario.
+2. Cadastre um usuário ou use o perfil **admin** (criado automaticamente ao subir via Docker no serviço de usuários).
 
 3. Realize o login no serviço de **usuários** (`/login`) e obtenha o token JWT.
 
@@ -53,6 +54,23 @@ O fluxo de utilização integrado é o seguinte:
 
 5. Agora você pode acessar os endpoints de **reserva de produtos** e **gerenciamento de estoque**, que exigem autenticação.  
    - Sem token válido, o serviço de produtos **não autoriza** a reserva.
+
+---
+
+## 📖 Swagger (Documentação e Testes)
+
+A aplicação expõe sua documentação de API via **Swagger UI**.  
+Após iniciar o serviço, acesse:
+
+```
+http://localhost:9091/swagger-ui.html
+```
+
+No Swagger você pode:
+
+- Visualizar todos os endpoints disponíveis
+- Testar requisições diretamente pela interface
+- Inserir o token JWT (via botão "Authorize") para chamar endpoints autenticados
 
 ---
 
@@ -89,6 +107,11 @@ O fluxo de utilização integrado é o seguinte:
 
 4. Acesse os endpoints (padrão `http://localhost:9091/`).
 
+5. Acesse o Swagger em:  
+   ```
+   http://localhost:9091/swagger-ui.html
+   ```
+
 ---
 
 ## 🐳 Rodando com Docker
@@ -108,6 +131,11 @@ O fluxo de utilização integrado é o seguinte:
 3. Certifique-se de que o container do serviço de **usuários** também está rodando (porta 9090).
 
 4. O Spring leva alguns segundos para aplicar as migrations com Flyway e abrir o endpoint.
+
+5. Teste a API pelo Swagger em:  
+   ```
+   http://localhost:9091/swagger-ui.html
+   ```
 
 ---
 
@@ -190,6 +218,7 @@ Authorization: <seu_token_jwt> *Não é necessario passar o "Bearer " antes do t
 - É necessário que o **cadastro-usuario** esteja rodando para autenticar as reservas.
 - Apenas usuários autenticados (via JWT) podem reservar produtos.
 - O perfil **admin** criado automaticamente pelo serviço de usuários pode gerenciar todos os recursos.
+- O **Swagger UI** é a forma mais prática de testar os endpoints com ou sem autenticação.
 
 ---
 
