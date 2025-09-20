@@ -78,7 +78,7 @@ public class ReservaServiceImpl implements ReservaService {
         ReservaProdutoEntity entitySalvo = reservaRepository.salvaReserva(reservaEntity);
 
         List<ProdutoReservaDto> produtosDto = entitySalvo.getItens().stream()
-                .map(i -> new ProdutoReservaDto(i.getProduto_id(), i.getNome_produto(), i.getTipo_produto()))
+                .map(i -> new ProdutoReservaDto(i.getProduto_id(), i.getNome_produto(), i.getTipo_produto(), i.getQuantidade(), i.getPreco_unitario(), i.getValor_total_item()))
                 .toList();
 
         return new ReservaResponseDto(
@@ -101,7 +101,7 @@ public class ReservaServiceImpl implements ReservaService {
 
         List<ProdutoReservaDto> produtosDto = entity.getItens()
                 .stream()
-                .map(i -> new ProdutoReservaDto(i.getProduto_id(), i.getNome_produto(), i.getTipo_produto())).toList();
+                .map(i -> new ProdutoReservaDto(i.getProduto_id(), i.getNome_produto(), i.getTipo_produto(), i.getQuantidade(), i.getPreco_unitario(), i.getValor_total_item())).toList();
 
         return new ReservaResponseDto(
                 email,
