@@ -19,4 +19,11 @@ public class ReservaRepositoryImpl implements ReservaRepository {
 
         return entitySalvo;
     }
+
+    @Override
+    public ReservaProdutoEntity findByEmailUsuario(String email) {
+        ReservaProdutoEntity entity = jpaRepository.findByEmailUsuario(email);
+
+        return entity;
+    }
 }

@@ -7,4 +7,6 @@ public interface ReservaService {
 
     ReservaResponseDto reservaProduto (ReservaRequestDto request, String token);
 
+    ReservaResponseDto listaProdutosReservado (String token);
+
 }
