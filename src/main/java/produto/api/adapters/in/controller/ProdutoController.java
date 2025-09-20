@@ -38,9 +38,22 @@ public class ProdutoController {
     }
 
     @PostMapping("/produto/reserva")
+    @Operation(summary = "Reserva produto por Usuario", description = "Reserva um produto por usuario")
+    @ApiResponse(responseCode = "200", description = "Produto reservado com sucesso")
+    @ApiResponse(responseCode = "400", description = "Existem campos vazios ou inválidos")
+    @ApiResponse(responseCode = "500", description = "Erro de servidor")
     public ResponseEntity<ReservaResponseDto> reservaProduto(@RequestBody ReservaRequestDto data,
                                                              @RequestHeader("Authorization") String token){
         return ResponseEntity.ok(reservaService.reservaProduto(data, token));
+    }
+
+    @GetMapping("/produto/reserva/find")
+    @Operation(summary = "Lista produtos reservados por Usuario", description = "Lista produtos reservados por Usuario")
+    @ApiResponse(responseCode = "200", description = "Lista encontrada com sucesso")
+    @ApiResponse(responseCode = "404", description = "Lista não encontrada ou vazia")
+    @ApiResponse(responseCode = "500", description = "Erro de servidor")
+    public ResponseEntity<ReservaResponseDto> listaProdutosReservado(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(reservaService.listaProdutosReservado(token));
     }
 
 

@@ -6,4 +6,6 @@ public interface ReservaRepository {
 
     ReservaProdutoEntity salvaReserva(ReservaProdutoEntity entity);
 
+    ReservaProdutoEntity findByEmailUsuario(String email);
+
 }

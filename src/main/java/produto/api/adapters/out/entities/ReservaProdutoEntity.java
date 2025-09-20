@@ -20,7 +20,8 @@ public class ReservaProdutoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reserva_id;
 
-    private String email_usuario;
+    @Column(name = "email_usuario")
+    private String emailUsuario;
     private BigDecimal valor_total;
 
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true)
