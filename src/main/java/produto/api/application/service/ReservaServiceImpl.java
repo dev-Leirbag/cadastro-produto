@@ -12,7 +12,6 @@ import produto.api.adapters.in.service.ReservaService;
 import produto.api.adapters.out.entities.ReservaItemEntity;
 import produto.api.adapters.out.entities.ReservaProdutoEntity;
 import produto.api.application.domain.ProdutoDomain;
-import produto.api.application.domain.ReservaProdutoDomain;
 import produto.api.application.infra.config.TokenService;
 import produto.api.application.infra.controller.exceptions.ProdutoNotFoundException;
 import produto.api.application.infra.controller.exceptions.QuantidadeEstoqueInvalidException;
@@ -43,7 +42,7 @@ public class ReservaServiceImpl implements ReservaService {
         }
 
         ReservaProdutoEntity reservaEntity = new ReservaProdutoEntity();
-        reservaEntity.setEmail_usuario(email);
+        reservaEntity.setEmailUsuario(email);
         reservaEntity.setValor_total(BigDecimal.ZERO);
         reservaEntity.setItens(new ArrayList<>());
 
@@ -83,10 +82,32 @@ public class ReservaServiceImpl implements ReservaService {
                 .toList();
 
         return new ReservaResponseDto(
-                entitySalvo.getEmail_usuario(),
+                entitySalvo.getEmailUsuario(),
                 entitySalvo.getReserva_id(),
                 produtosDto,
                 entitySalvo.getValor_total()
+        );
+    }
+
+    @Override
+    public ReservaResponseDto listaProdutosReservado(String token) {
+        String email = tokenService.extractUsername(token);
+
+        if(email.isBlank()){
+            throw new UsernameNotFoundException("Usuario não encontrado: " + email);
+        }
+
+        ReservaProdutoEntity entity = reservaRepository.findByEmailUsuario(email);
+
+        List<ProdutoReservaDto> produtosDto = entity.getItens()
+                .stream()
+                .map(i -> new ProdutoReservaDto(i.getProduto_id(), i.getNome_produto(), i.getTipo_produto())).toList();
+
+        return new ReservaResponseDto(
+                email,
+                entity.getReserva_id(),
+                produtosDto,
+                entity.getValor_total()
         );
     }
 }
