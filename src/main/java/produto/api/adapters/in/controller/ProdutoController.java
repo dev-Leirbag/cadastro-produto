@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import produto.api.adapters.in.dto.ProdutoDtoRequest;
-import produto.api.adapters.in.dto.ProdutoDtoResponse;
-import produto.api.adapters.in.dto.ReservaRequestDto;
-import produto.api.adapters.in.dto.ReservaResponseDto;
+import produto.api.adapters.in.dto.*;
 import produto.api.adapters.in.service.ProdutoService;
 import produto.api.adapters.in.service.ReservaService;
 import produto.api.application.infra.config.SecurityConfig;
@@ -47,13 +44,18 @@ public class ProdutoController {
         return ResponseEntity.ok(reservaService.reservaProduto(data, token));
     }
 
-    @GetMapping("/produto/reserva/find")
+    @GetMapping("/reserva/find")
     @Operation(summary = "Lista produtos reservados por Usuario", description = "Lista produtos reservados por Usuario")
     @ApiResponse(responseCode = "200", description = "Lista encontrada com sucesso")
     @ApiResponse(responseCode = "404", description = "Lista não encontrada ou vazia")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
     public ResponseEntity<ReservaResponseDto> listaProdutosReservado(@RequestHeader("Authorization") String token){
         return ResponseEntity.ok(reservaService.listaProdutosReservado(token));
+    }
+
+    @GetMapping("/reserva")
+    public ResponseEntity<ProdutoReservaResponseDto> buscaReservaPorId(@RequestParam(value = "id") Long id){
+        return ResponseEntity.ok(reservaService.buscaReservaPorId(id));
     }
 
 
