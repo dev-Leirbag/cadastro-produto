@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import produto.api.adapters.in.dto.*;
@@ -25,7 +26,9 @@ public class ProdutoController {
     private final ProdutoService service;
     private final ReservaService reservaService;
 
-    @PostMapping("/produto")
+    @PostMapping(value = "/produto",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "Cria um produto", description = "Cria e salva um produto")
     @ApiResponse(responseCode = "200", description = "Produto criado com sucesso")
     @ApiResponse(responseCode = "400", description = "Existem campos vazios ou inválidos")
@@ -34,7 +37,9 @@ public class ProdutoController {
         return ResponseEntity.ok(service.criaProduto(data));
     }
 
-    @PostMapping("/produto/reserva")
+    @PostMapping(value = "/produto/reserva",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "Reserva produto por Usuario", description = "Reserva um produto por usuario")
     @ApiResponse(responseCode = "200", description = "Produto reservado com sucesso")
     @ApiResponse(responseCode = "400", description = "Existem campos vazios ou inválidos")
@@ -44,7 +49,8 @@ public class ProdutoController {
         return ResponseEntity.ok(reservaService.reservaProduto(data, token));
     }
 
-    @GetMapping("/reserva/find")
+    @GetMapping(value = "/reserva/find",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "Lista produtos reservados por Usuario", description = "Lista produtos reservados por Usuario")
     @ApiResponse(responseCode = "200", description = "Lista encontrada com sucesso")
     @ApiResponse(responseCode = "404", description = "Lista não encontrada ou vazia")
@@ -53,13 +59,15 @@ public class ProdutoController {
         return ResponseEntity.ok(reservaService.listaProdutosReservado(token));
     }
 
-    @GetMapping("/reserva")
+    @GetMapping(value = "/reserva",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<ProdutoReservaResponseDto> buscaReservaPorId(@RequestParam(value = "id") Long id){
         return ResponseEntity.ok(reservaService.buscaReservaPorId(id));
     }
 
 
-    @GetMapping("/produto/all")
+    @GetMapping(value = "/produto/all",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "Lista todos os produtos", description = "Lista todos os produtos existentes")
     @ApiResponse(responseCode = "200", description = "Lista encontrada com sucesso")
     @ApiResponse(responseCode = "404", description = "Lista não encontrada ou vazia")
@@ -69,7 +77,8 @@ public class ProdutoController {
         return ResponseEntity.ok(service.listaProduto(page, size));
     }
 
-    @GetMapping("/produto/{id}")
+    @GetMapping(value = "/produto/{id}",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "Busca produto por Id", description = "Busca produto por Id")
     @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso")
     @ApiResponse(responseCode = "404", description = "Produto não encontrado")
@@ -78,7 +87,9 @@ public class ProdutoController {
         return ResponseEntity.ok(service.buscaProdutoPorId(id));
     }
 
-    @PutMapping("/produto/{id}")
+    @PutMapping(value = "/produto/{id}",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "Atualiza produto por Id", description = "Atualiza produto por Id")
     @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso")
     @ApiResponse(responseCode = "404", description = "Produto não encontrado")
@@ -87,7 +98,8 @@ public class ProdutoController {
         return ResponseEntity.ok(service.atualizaProdutoPorId(data, id));
     }
 
-    @DeleteMapping("/produto/{id}")
+    @DeleteMapping(value = "/produto/{id}",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "Deleta produto por Id", description = "Deleta produto por Id")
     @ApiResponse(responseCode = "204", description = "Produto deletado com sucesso")
     @ApiResponse(responseCode = "404", description = "Produto não encontrado")
@@ -97,7 +109,8 @@ public class ProdutoController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/produto/buscar")
+    @GetMapping(value = "/produto/buscar",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "Busca produto pelo nome", description = "Busca produto pelo nome")
     @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
@@ -107,7 +120,8 @@ public class ProdutoController {
         return ResponseEntity.ok(service.buscaProduto(page,size,nomeProduto));
     }
 
-    @GetMapping("/produto/buscar/tipo")
+    @GetMapping(value = "/produto/buscar/tipo",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "Busca pelo tipo do produto", description = "Busca pelo tipo do produto")
     @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
@@ -117,7 +131,8 @@ public class ProdutoController {
         return ResponseEntity.ok(service.buscaPorTipoProduto(page,size,tipoProduto));
     }
 
-    @GetMapping("/produto/buscar/preco")
+    @GetMapping(value = "/produto/buscar/preco",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "Busca pelo preço do produto", description = "Busca pelo preço do produto")
     @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
@@ -128,7 +143,8 @@ public class ProdutoController {
         return ResponseEntity.ok(service.buscaPorPreco(page,size,min, max));
     }
 
-    @GetMapping("/produto/buscar/filtro")
+    @GetMapping(value = "/produto/buscar/filtro",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @Operation(summary = "Busca pelo preço, tipo, ou nome do produto", description = "Busca pelo preço, tipo, ou nome do produto")
     @ApiResponse(responseCode = "200", description = "Produto encontrado com sucesso")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
