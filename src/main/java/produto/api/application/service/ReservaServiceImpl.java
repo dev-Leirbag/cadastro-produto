@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import produto.api.adapters.in.dto.ProdutoReservaDto;
+import produto.api.adapters.in.dto.ProdutoReservaResponseDto;
 import produto.api.adapters.in.dto.ReservaRequestDto;
 import produto.api.adapters.in.dto.ReservaResponseDto;
 import produto.api.adapters.in.mapper.Converter;
@@ -13,8 +14,10 @@ import produto.api.adapters.out.entities.ReservaItemEntity;
 import produto.api.adapters.out.entities.ReservaProdutoEntity;
 import produto.api.application.domain.ProdutoDomain;
 import produto.api.application.infra.config.TokenService;
+import produto.api.application.infra.controller.exceptions.EmailNotFoundException;
 import produto.api.application.infra.controller.exceptions.ProdutoNotFoundException;
 import produto.api.application.infra.controller.exceptions.QuantidadeEstoqueInvalidException;
+import produto.api.application.infra.controller.exceptions.ReservaNotFound;
 import produto.api.out.ProdutoRepository;
 import produto.api.out.ReservaRepository;
 
@@ -38,7 +41,7 @@ public class ReservaServiceImpl implements ReservaService {
         String email = tokenService.extractUsername(token);
 
         if(email.isBlank()){
-            throw new UsernameNotFoundException("Usuario não encontrado: " + email);
+            throw new UsernameNotFoundException("Usuario com o email: " + email + " não encontrado");
         }
 
         ReservaProdutoEntity reservaEntity = new ReservaProdutoEntity();
@@ -83,7 +86,7 @@ public class ReservaServiceImpl implements ReservaService {
 
         return new ReservaResponseDto(
                 entitySalvo.getEmailUsuario(),
-                entitySalvo.getReserva_id(),
+                entitySalvo.getReservaId(),
                 produtosDto,
                 entitySalvo.getValor_total()
         );
@@ -94,7 +97,7 @@ public class ReservaServiceImpl implements ReservaService {
         String email = tokenService.extractUsername(token);
 
         if(email.isBlank()){
-            throw new UsernameNotFoundException("Usuario não encontrado: " + email);
+            throw new EmailNotFoundException("Usuario com o email: " + email + " não encontrado");
         }
 
         ReservaProdutoEntity entity = reservaRepository.findByEmailUsuario(email);
@@ -105,9 +108,25 @@ public class ReservaServiceImpl implements ReservaService {
 
         return new ReservaResponseDto(
                 email,
-                entity.getReserva_id(),
+                entity.getReservaId(),
                 produtosDto,
                 entity.getValor_total()
         );
+    }
+
+    @Override
+    public ProdutoReservaResponseDto buscaReservaPorId(Long id) {
+        ReservaProdutoEntity entity = reservaRepository.findByReservaId(id);
+
+        if(entity == null){
+            throw new ReservaNotFound("Reserva com o id: " + id + " não encontrada");
+        }
+
+        return new ProdutoReservaResponseDto(
+                entity.getReservaId(),
+                entity.getEmailUsuario(),
+                entity.getValor_total()
+        );
+
     }
 }

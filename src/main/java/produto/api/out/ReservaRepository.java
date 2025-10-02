@@ -8,4 +8,6 @@ public interface ReservaRepository {
 
     ReservaProdutoEntity findByEmailUsuario(String email);
 
+    ReservaProdutoEntity findByReservaId (Long id);
+
 }

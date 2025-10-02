@@ -7,4 +7,6 @@ public interface ReservaJpaRepository extends JpaRepository<ReservaProdutoEntity
 
     ReservaProdutoEntity findByEmailUsuario(String email);
 
+    ReservaProdutoEntity findByReservaId (Long id);
+
 }

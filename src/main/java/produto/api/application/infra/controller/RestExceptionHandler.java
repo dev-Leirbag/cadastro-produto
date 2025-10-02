@@ -46,4 +46,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<RestErrorMessage> produtoNaoEncontrado(ProdutoNotFoundException ex){
         return mensagemErro(ex, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(EmailNotFoundException.class)
+    public ResponseEntity<RestErrorMessage> emailNaoEncontrado(EmailNotFoundException ex){
+        return mensagemErro(ex, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ReservaNotFound.class)
+    public ResponseEntity<RestErrorMessage> reservaNaoEncontrada(ReservaNotFound ex){
+        return mensagemErro(ex, HttpStatus.NOT_FOUND);
+    }
 }
