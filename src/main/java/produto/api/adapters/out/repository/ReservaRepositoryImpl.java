@@ -26,4 +26,11 @@ public class ReservaRepositoryImpl implements ReservaRepository {
 
         return entity;
     }
+
+    @Override
+    public ReservaProdutoEntity findByReservaId(Long id) {
+        ReservaProdutoEntity entity = jpaRepository.findByReservaId(id);
+
+        return entity;
+    }
 }

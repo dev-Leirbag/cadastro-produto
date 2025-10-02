@@ -18,7 +18,8 @@ public class ReservaProdutoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reserva_id;
+    @Column(name = "reserva_id")
+    private Long reservaId;
 
     @Column(name = "email_usuario")
     private String emailUsuario;
