@@ -1,4 +1,4 @@
-# API de Cadastro de Produtos
+# Cadastro de Produtos
 
 Este projeto é uma API REST para **cadastro e gerenciamento de produtos**,
 construída com **Java 17 + Spring Boot**, utilizando **Spring Data JPA**,
