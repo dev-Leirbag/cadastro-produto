@@ -9,9 +9,18 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/db_produto
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: SatoroGojo
+
+      # 🧩 Configurações de conexão com RabbitMQ
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: admin
+      SPRING_RABBITMQ_PASSWORD: admin
+
     depends_on:
       db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
     restart: always
 
   db:
@@ -27,4 +36,15 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # comunicação com o Spring Boot
+      - "15672:15672" # painel de administração
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
     restart: always

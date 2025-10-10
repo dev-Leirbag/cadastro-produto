@@ -4,10 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import produto.api.adapters.in.dto.ProdutoReservaDto;
-import produto.api.adapters.in.dto.ProdutoReservaResponseDto;
-import produto.api.adapters.in.dto.ReservaRequestDto;
-import produto.api.adapters.in.dto.ReservaResponseDto;
+import produto.api.adapters.in.dto.*;
 import produto.api.adapters.in.mapper.Converter;
 import produto.api.adapters.in.service.ReservaService;
 import produto.api.adapters.out.entities.ReservaItemEntity;
@@ -18,10 +15,13 @@ import produto.api.application.infra.controller.exceptions.EmailNotFoundExceptio
 import produto.api.application.infra.controller.exceptions.ProdutoNotFoundException;
 import produto.api.application.infra.controller.exceptions.QuantidadeEstoqueInvalidException;
 import produto.api.application.infra.controller.exceptions.ReservaNotFound;
+import produto.api.application.infra.messaging.EventoReservaProduto;
+import produto.api.application.infra.messaging.ProdutorEventoReserva;
 import produto.api.out.ProdutoRepository;
 import produto.api.out.ReservaRepository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class ReservaServiceImpl implements ReservaService {
     private final Converter converter;
     private final ReservaRepository reservaRepository;
     private final ProdutoRepository produtoRepository;
-
+    private final ProdutorEventoReserva produtoEventoReserva;
 
     @Override
     @Transactional
@@ -44,7 +44,7 @@ public class ReservaServiceImpl implements ReservaService {
             throw new UsernameNotFoundException("Usuario com o email: " + email + " não encontrado");
         }
 
-        ReservaProdutoEntity reservaEntity = new ReservaProdutoEntity();
+        ReservaProdutoEntity reservaEntity = new ReservaProdutoEntity(); 
         reservaEntity.setEmailUsuario(email);
         reservaEntity.setValor_total(BigDecimal.ZERO);
         reservaEntity.setItens(new ArrayList<>());
@@ -79,6 +79,31 @@ public class ReservaServiceImpl implements ReservaService {
         }
 
         ReservaProdutoEntity entitySalvo = reservaRepository.salvaReserva(reservaEntity);
+
+        //Monta a lista de produtos para o evento
+        List<ProdutoEventoDto> produtoEvento = entitySalvo.getItens()
+                .stream()
+                .map(i -> new ProdutoEventoDto(
+                   i.getProduto_id(),
+                   i.getNome_produto(),
+                   i.getTipo_produto(),
+                   i.getQuantidade(),
+                   i.getPreco_unitario(),
+                   i.getValor_total_item()
+                ))
+                .toList();
+
+        //Cria o evento
+
+        EventoReservaProduto evento = new EventoReservaProduto(
+                entitySalvo.getEmailUsuario(),
+                entitySalvo.getReservaId(),
+                entitySalvo.getValor_total(),
+                LocalDateTime.now(),
+                produtoEvento
+        );
+
+        produtoEventoReserva.enviarEventoReserva(evento);
 
         List<ProdutoReservaDto> produtosDto = entitySalvo.getItens().stream()
                 .map(i -> new ProdutoReservaDto(i.getProduto_id(), i.getNome_produto(), i.getTipo_produto(), i.getQuantidade(), i.getPreco_unitario(), i.getValor_total_item()))
