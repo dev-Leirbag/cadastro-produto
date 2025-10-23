@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import produto.api.adapters.in.controller.ProdutoController;
 import produto.api.adapters.in.dto.ProdutoDtoRequest;
 import produto.api.adapters.in.dto.ProdutoDtoResponse;
 import produto.api.adapters.in.mapper.Converter;
@@ -17,6 +18,9 @@ import produto.api.out.ProdutoRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 @RequiredArgsConstructor
@@ -52,8 +56,9 @@ public class ProdutoServiceImpl implements ProdutoService {
         ProdutoDomain produtoDomain = repository.findById(id).orElseThrow(() -> {
             throw new ProdutoNotFoundException("Produto com esse id não foi encontrado");
         });
-
-        return converter.domainParaDtoResponse(produtoDomain);
+        var dto = converter.domainParaDtoResponse(produtoDomain);
+        addHateoasLink(dto);
+        return dto;
     }
 
     @Override
@@ -133,5 +138,13 @@ public class ProdutoServiceImpl implements ProdutoService {
 
         if (quantidadeEstoque == null || quantidadeEstoque <= 0)
             throw new QuantidadeEstoqueInvalidException("A quantidade não pode ser nula ou abaixo de zero");
+    }
+
+    private void addHateoasLink(ProdutoDtoResponse dto){
+        dto.add(linkTo(methodOn(ProdutoController.class).buscaProdutoPorId(dto.getId())).withSelfRel());
+
+//        dto.add(linkTo(methodOn(ProdutoController.class).deletaProdutoPorId(dto.getId())).withRel("delete").withType("DELETE"));
+//
+//        dto.add(linkTo(methodOn(ProdutoController.class).buscaProdutoPorNome(0, 0, dto.getNomeProduto())).withRel("findByName").withType("GET"));
     }
 }

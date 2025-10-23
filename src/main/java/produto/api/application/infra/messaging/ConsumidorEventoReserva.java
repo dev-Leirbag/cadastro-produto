@@ -13,9 +13,9 @@ public class ConsumidorEventoReserva {
     @RabbitListener(queues = RabbitConfig.FILA_RESERVA_PRODUTO)
     public void consumirEventoReserva(EventoReservaProduto evento){
         logger.info("📩 Evento de reserva recebido do RabbitMQ:");
-        logger.info("Usuario: ", evento.getEmailUsuario());
-        logger.info("ReservaId: ", evento.getReservaId());
-        logger.info("Produtos: ", evento.getProdutos());
-        logger.info("ValorTotal: ", evento.getValorTotal());
+        System.out.println("Usuario: " + evento.getEmailUsuario());
+        System.out.println("ReservaId: " + evento.getReservaId());
+        System.out.println("Produtos: " + evento.getProdutos());
+        System.out.println("ValorTotal: " + evento.getValorTotal());
     }
 }
